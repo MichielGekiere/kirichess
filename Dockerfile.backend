@@ -24,7 +24,7 @@ RUN dotnet publish -c Release -o /out
 
 # --- Runtime ---
 # Same pinning reason as the build stage above.
-FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:a4556ed033fa96f984bb7a8d348851cb2d36b1281dd2420070045f664fbb5f94
+FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:222759b391a1aaf241166672c8f99b2d4ada452e7b5319f3c6e8f265a37b5ad4
 WORKDIR /app
 
 # curl is only here to serve the HEALTHCHECK below; the aspnet image ships without it.

@@ -98,8 +98,8 @@ server uses): https://kirichess.com/rules.
 **Licence:** the rules text / manual is under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — you can reuse and adapt it if you give
 credit. Game rules themselves are not copyrighted; the licence is for the wording. Platform source
-is Apache-2.0. The working repo is not public. Play / read rules at https://kirichess.com and
-https://kirichess.com/rules.
+is Apache-2.0. Source: https://github.com/MichielGekiere/kirichess. Play / read rules at
+https://kirichess.com and https://kirichess.com/rules.
 
 ---
 

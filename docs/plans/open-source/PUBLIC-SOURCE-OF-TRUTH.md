@@ -1,7 +1,8 @@
 # Plan: public repo as source of truth (develop + community + Fly)
 
-> **Status:** in progress (owner decisions locked 2026-10-11). Not standing policy until cutover is done
-> and `docs/ROADMAP.md` / `docs/ops/PUBLIC-SNAPSHOT.md` are updated to match.
+> **Status:** done 2026-10-12. Public repo is the source of truth; first prod deploy from public was
+> `v1.3.5`; `kirichess-archive` is archived. Ops probes / backup / restore-drill workflows remain in
+> the tree but need their repo secrets wired (or stay disabled) — see Phase C notes below.
 >
 > **Locked decisions:**
 > | # | Choice |
@@ -49,41 +50,41 @@ Record answers at the top of the PR or in chat before execution:
 
 Agent checklist:
 
-- [ ] Confirm D1–D6 with the owner.
-- [ ] Land any private PRs the owner wants in the export (D6).
-- [ ] On the export tip (private `main` or agreed SHA):
+- [x] Confirm D1–D6 with the owner.
+- [x] Land any private PRs the owner wants in the export (D6).
+- [x] On the export tip (private `main` or agreed SHA):
   ```bash
   dotnet test KiriChess.slnx --filter "FullyQualifiedName~TrackedTreeHygiene"
   gitleaks detect --log-opts="--all"
   ```
-- [ ] Manually re-check absent / untracked (PUBLIC-SNAPSHOT §3–4):
+- [x] Manually re-check absent / untracked (PUBLIC-SNAPSHOT §3–4):
   - `infra/betterstack/terraform.tfstate*`
   - `.claude/settings.local.json`
   - `.mailmap`, `.private/`, `.wrangler/`
-- [ ] Skim `docs/ops/PROVIDER-ACCOUNTS.md` for provider account / project / zone IDs that
+- [x] Skim `docs/ops/PROVIDER-ACCOUNTS.md` for provider account / project / zone IDs that
       should not be world-readable; redact in the **private** tip before export, or add path
       to D3 omit list.
-- [ ] Note the exact private commit SHA that will be archived (`git rev-parse HEAD`).
+- [x] Note the exact private commit SHA that will be archived (`git rev-parse HEAD`).
 
 **Stop if** hygiene or gitleaks is red for a new (non-allowlisted) finding.
 
 ## Phase B — Create the public repository
 
-- [ ] Create empty public repo at D1 (no README/license init from GitHub UI if that would
+- [x] Create empty public repo at D1 (no README/license init from GitHub UI if that would
       create a conflicting first commit — prefer empty).
-- [ ] Export tracked tree from the private tip:
+- [x] Export tracked tree from the private tip:
   ```bash
   # from private clone, at the agreed SHA
   git archive --format=tar HEAD | tar -x -C /path/to/public-worktree
   ```
   Apply D3 omissions (delete those paths from the worktree before the first commit).
-- [ ] First commit in the new repo with noreply identity, message along the lines of:
+- [x] First commit in the new repo with noreply identity, message along the lines of:
   `Initial public import of KiriChess (no private history).`
-- [ ] Push `main` to the public remote.
-- [ ] Enable: Issues, PRs, Discussions (optional), **Private vulnerability reporting**.
-- [ ] Branch protection on `main`: require PR + required CI checks (mirror private policy as
+- [x] Push `main` to the public remote.
+- [x] Enable: Issues, PRs, Discussions (optional), **Private vulnerability reporting**.
+- [x] Branch protection on `main`: require PR + required CI checks (mirror private policy as
       closely as the plan allows). Owner may need to click through GitHub UI.
-- [ ] Confirm `LICENSE`, `NOTICE`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
+- [x] Confirm `LICENSE`, `NOTICE`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
       (if present) are in the tree.
 
 **Stop if** any of PUBLIC-SNAPSHOT §3 paths appear in `git ls-files` on the public repo.
@@ -124,36 +125,42 @@ Default recommendation:
 | `ci.yml`, `deploy.yml`, `secret-scan.yml`, `codeql.yml`, `semgrep.yml` | — |
 | — | `offsite-backup.yml`, `ops-probes.yml`, `restore-drill.yml` unless D3 kept them **and** owner confirms secrets + that public fork PRs cannot trigger them with credentials |
 
+**2026-10-12:** workflows stayed in the tree (D3). `ops-probes.yml` is **disabled** on public until
+`SYNTHETIC_API_TOKEN` and `NEON_API_KEY` are set as repo secrets (was failing every 15 minutes).
+`offsite-backup.yml` stays unscheduled until the GitHub DPA is accepted. `restore-drill.yml` stays
+monthly — needs `NEON_API_KEY` before the next scheduled run succeeds.
+
 If a workflow is omitted from the public tree, document that backups/probes still run from the
 archived private repo **or** re-add them later with explicit fork protection.
 
 ### C3. Fork / secret hardening
 
-- [ ] Ensure deploy jobs use `environment: production|staging` (already true in `deploy.yml`).
-- [ ] Confirm Environments do **not** grant secrets to `pull_request` from forks (GitHub default
+- [x] Ensure deploy jobs use `environment: production|staging` (already true in `deploy.yml`).
+- [x] Confirm Environments do **not** grant secrets to `pull_request` from forks (GitHub default
       for `pull_request` is no secrets; do **not** switch those jobs to `pull_request_target`).
 - [ ] Optional: environment required reviewers if the GitHub plan allows (private hobby repos
       previously could not; public may differ — owner checks UI).
 
 ### C4. First deploy from public
 
-- [ ] Push a no-op or real change to public `main`, wait for CI green.
-- [ ] Tag next semver after private’s latest production tag (check `git ls-remote --tags` on
+- [x] Push a no-op or real change to public `main`, wait for CI green.
+- [x] Tag next semver after private’s latest production tag (check `git ls-remote --tags` on
       **both** remotes; as of private tip, latest was in the `v1.3.x` line — do not reuse a tag).
   ```bash
   git tag vX.Y.Z
   git push origin vX.Y.Z
   ```
-- [ ] Watch `Deploy` workflow on the **public** repo through backend + ui.
-- [ ] Smoke: load `kirichess.com` in a private window; play or hit `/api` health as in
+  Done as `v1.3.5` from public (2026-10-12).
+- [x] Watch `Deploy` workflow on the **public** repo through backend + ui.
+- [x] Smoke: load `kirichess.com` in a private window; play or hit `/api` health as in
       `docs/ops/LAUNCH.md` / DEPLOYMENT post-deploy checks.
-- [ ] `fly machines list --app kirichess-api` → exactly one machine (Redis-off invariant).
+- [x] `fly machines list --app kirichess-api` → exactly one machine (Redis-off invariant).
 
 ### C5. Disable deploy on the private repo
 
-- [ ] Disable or delete `deploy.yml` on the private repo, **or** archive the private repo so
+- [x] Disable or delete `deploy.yml` on the private repo, **or** archive the private repo so
       Actions stop (D4).
-- [ ] Confirm a tag push on private can no longer ship production.
+- [x] Confirm a tag push on private can no longer ship production.
 
 ## Phase D — Product and docs cutover
 
@@ -162,44 +169,44 @@ Update URLs and wording so strangers never hit the private 404. Do this **on the
 
 ### D1. Must update (tracked)
 
-- [ ] Root `README.md` — remove “working repository stays private”; link the public clone URL;
+- [x] Root `README.md` — remove “working repository stays private”; link the public clone URL;
       invite PRs via `CONTRIBUTING.md`.
-- [ ] `SECURITY.md` — GitHub advisory URL + email; drop “until snapshot” hedging.
-- [ ] `docs/legal/TERMS.md` + generated / mirrored terms UI (`ui/app/.../terms`) — development
+- [x] `SECURITY.md` — GitHub advisory URL + email; drop “until snapshot” hedging.
+- [x] `docs/legal/TERMS.md` + generated / mirrored terms UI (`ui/app/.../terms`) — development
       repo is public at `<url>`; bump terms version if that document’s versioning rules require it
       (`LegalDocumentDriftTests` / TERMS version process).
-- [ ] `docs/game/CLAIMS.md` — public source URL; retire or rewrite the missing
+- [x] `docs/game/CLAIMS.md` — public source URL; retire or rewrite the missing
       `scripts/export-public-snapshot.ps1` pointer.
-- [ ] `docs/plans/chessvariants/SUBMISSION-DRAFT.md` — link public repo, never the private one.
-- [ ] `docs/plans/launch/POST-DRAFT.md` — if it cites source, use public URL.
-- [ ] `.github/ISSUE_TEMPLATE/*` — advisory / bug links → public repo.
-- [ ] `docs/ops/PUBLIC-SNAPSHOT.md` — add a short banner: cutover done; this doc remains the
+- [x] `docs/plans/chessvariants/SUBMISSION-DRAFT.md` — link public repo, never the private one.
+- [x] `docs/plans/launch/POST-DRAFT.md` — if it cites source, use public URL.
+- [x] `.github/ISSUE_TEMPLATE/*` — advisory / bug links → public repo.
+- [x] `docs/ops/PUBLIC-SNAPSHOT.md` — add a short banner: cutover done; this doc remains the
       **historical export procedure**; source of truth is the public repo.
-- [ ] `docs/ROADMAP.md` — mark AD.13 / #11a done **as “public source of truth”**, and strike or
+- [x] `docs/ROADMAP.md` — mark AD.13 / #11a done **as “public source of truth”**, and strike or
       rewrite 10c.2 “working repo stays private permanently” so agents do not undo the cutover.
-- [ ] `docs/ops/LAUNCH.md` / `docs/ops/DEPLOYMENT.md` — deploy remote = public repo; D3 row about
+- [x] `docs/ops/LAUNCH.md` / `docs/ops/DEPLOYMENT.md` — deploy remote = public repo; D3 row about
       never linking the private tree.
-- [ ] `docs/README.md` — point “Cutting a public snapshot” at this plan (completed) + keep
+- [x] `docs/README.md` — point “Cutting a public snapshot” at this plan (completed) + keep
       PUBLIC-SNAPSHOT as the export appendix.
 
 ### D2. Site copy
 
-- [ ] `/about` and any footer/GitHub link: public repo only (private link must stay hidden).
-- [ ] Redeploy if terms / about need a production release after the doc PR.
+- [x] `/about` and any footer/GitHub link: public repo only (private link must stay hidden).
+- [x] Redeploy if terms / about need a production release after the doc PR.
 
 ### D3. Archive private
 
-- [ ] GitHub → private repo → **Archive** (or rename + clear description: “pre-public archive,
+- [x] GitHub → private repo → **Archive** (or rename + clear description: “pre-public archive,
       do not deploy”).
-- [ ] Local clones: re-point `origin` to the public URL; keep a `private-archive` remote if useful.
+- [x] Local clones: re-point `origin` to the public URL; keep a `private-archive` remote if useful.
 
 ## Phase E — Community readiness (same week, not blocking first deploy)
 
-- [ ] `CONTRIBUTING.md` accurate for public (build, test, PR expectations).
-- [ ] Code of Conduct linked from README (if not already).
-- [ ] Labels: `good first issue`, `bug`, `enhancement` (light set).
-- [ ] One or two starter issues filed on the **public** repo.
-- [ ] Dependabot / existing automation still opens PRs on the public repo.
+- [x] `CONTRIBUTING.md` accurate for public (build, test, PR expectations).
+- [x] Code of Conduct linked from README (if not already).
+- [x] Labels: `good first issue`, `bug`, `enhancement` (light set).
+- [x] One or two starter issues filed on the **public** repo.
+- [x] Dependabot / existing automation still opens PRs on the public repo.
 
 ## Verification (definition of done)
 

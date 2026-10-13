@@ -15,9 +15,9 @@ old one. The UI pass was a third shape and is closed (2026-09-24).
 - [x] The release is deployed and `main` carries the legal pass (`/privacy` names a controller and
       does **not** say `[CONTROLLER NAME AND CONTACT ADDRESS...]`). Production is `v1.3.3`
       (2026-10-09): Google sign-in UI + Access off; legal pass already on `main` from the soft-launch tree.
-- [x] The [UI-CHECKLIST.md](../../ops/UI-CHECKLIST.md) pass (roadmap **8.8** / #4) is done on that
-      deployed site, desktop and mobile, and in-scope **Notes** are shipped (**8.8a** / #4a).
-      Closed 2026-09-24, before Access came down.
+- [x] The UI checklist pass (roadmap **8.8** / #4) is done on that deployed site, desktop and
+      mobile, and in-scope **Notes** are shipped (**8.8a** / #4a). Closed 2026-09-24, before Access
+      came down.
 - [x] The Cloudflare Access application is removed, and you have loaded `kirichess.com` in a private
       window on a device that has never authenticated, to prove it. Done 2026-10-08 (#12).
 - [x] A throwaway registration receives its confirmation email

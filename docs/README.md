@@ -18,9 +18,7 @@ docs/
 │   ├── CONTINUITY.md      if the maintainer disappears; moving off Fly/Neon
 │   ├── MAINTENANCE-CALENDAR.md  quarterly checklist
 │   ├── MIGRATIONS.md      roll-forward-only schema policy
-│   ├── PROVIDER-ACCOUNTS.md
-│   ├── PUBLIC-SNAPSHOT.md cutting a clean public snapshot repo
-│   └── UI-CHECKLIST.md    manual styling / UI pass
+│   └── PROVIDER-ACCOUNTS.md
 ├── decisions/             standing "why", not a queue
 │   ├── AUTH.md            session threat model
 │   ├── ACCESSIBILITY.md   why no conformance duty applies, and its triggers
@@ -30,7 +28,6 @@ docs/
 ├── plans/                 drafts that are not yet standing docs
 │   ├── launch/            soft-launch post
 │   ├── chessvariants/     catalogue submission
-│   ├── open-source/       public repo as source of truth (develop + Fly)
 │   └── a11y/              NVDA pass
 └── audits/                check work (INDEX, PRIORITY_FIX, one report per letter)
 ```
@@ -54,10 +51,6 @@ docs/
 | What to do before / on / right after launch | [ops/LAUNCH.md](ops/LAUNCH.md) |
 | What to do when an alert fires | [ops/INCIDENTS.md](ops/INCIDENTS.md) |
 | If the maintainer disappears | [ops/CONTINUITY.md](ops/CONTINUITY.md) |
-| Manual UI / styling pass | [ops/UI-CHECKLIST.md](ops/UI-CHECKLIST.md) |
-| Turning the patron badge on | [ops/PATRON-BADGE-GOLIVE.md](ops/PATRON-BADGE-GOLIVE.md) |
-| Making the public repo the source of truth (community + Fly) | [plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md](plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md) |
-| Cutting a clean export (no private history) | [ops/PUBLIC-SNAPSHOT.md](ops/PUBLIC-SNAPSHOT.md) |
 | Why sessions work this way | [decisions/AUTH.md](decisions/AUTH.md) |
 | Terms / privacy | [legal/TERMS.md](legal/TERMS.md), [legal/PRIVACY.md](legal/PRIVACY.md) |
 | Public HTTP API | [api/openapi.json](api/openapi.json); bots: [api/openapi-public.json](api/openapi-public.json) |

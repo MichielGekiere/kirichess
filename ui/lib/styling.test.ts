@@ -182,7 +182,7 @@ describe("styling.md is still true of ui/", () => {
     const hits = scan(/fixed inset-0[^"'`]*bg-black\//, [
       // Dialog IS the shell.
       "ui/components/Dialog.tsx",
-      // Lobby surface; its styling is recorded as shipped and walked in UI-CHECKLIST.
+      // Lobby surface; its styling is recorded as shipped (roadmap #4 / #4a).
       "ui/components/BotGameDialog.tsx",
     ]);
     expect(

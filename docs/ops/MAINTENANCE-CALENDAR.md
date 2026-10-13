@@ -146,5 +146,5 @@ secret, confirm a staging deploy, then revoke the previous four.
   create a second one elsewhere"): item 5 is **$3-1**, the missing second record of a donation,
   item 6 is **I-4-2**, one database dump kept outside both Cloudflare and Neon, and item 7 is
   **B-4-2**, the annual rotation of the Fly deploy token and the Neon management key. It is not a
-  general ops checklist; `docs/ops/DEPLOYMENT.md` and `docs/ops/UI-CHECKLIST.md` cover their own
-  ground.
+  general ops checklist; `docs/ops/DEPLOYMENT.md` covers deploy ground, and styling rules live in
+  `.claude/rules/styling.md`.

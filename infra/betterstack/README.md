@@ -145,9 +145,10 @@ terraform output -raw synthetic_play_heartbeat_url | gh secret set SYNTHETIC_HEA
 terraform output -raw neon_watch_heartbeat_url     | gh secret set NEON_WATCH_HEARTBEAT_URL
 ```
 
-**Do not dispatch yet.** August private-repo minutes are spent. After 1 Sep, dispatch **Ops probes
-(10c.5)** once from the Actions tab. The heartbeats go green; until that first ping they will
-open an incident after `period + grace` (30 minutes).
+**Owner step (not launch-gated):** the 15-minute cron is in `ops-probes.yml`, and GitHub has the
+workflow **disabled_manually**, so it is not spending minutes. Re-enable it and dispatch **Ops
+probes (10c.5)** once from the Actions tab (see ROADMAP.md). The heartbeats go green; until that
+first ping they will open an incident after `period + grace` (30 minutes).
 
 `BetterStackAlertingDriftTests` fails the build if those four resource blocks, or the two scripts,
 disappear.

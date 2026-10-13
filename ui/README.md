@@ -22,10 +22,11 @@ Without Docker:
 
 ## Layout
 
-- `app/`, App Router pages
+- `app/[locale]/`, App Router pages (six locales; English keeps unprefixed paths)
 - `components/`, shared UI
 - `lib/`, API client (`api.ts` + generated `api.generated.ts`), realtime, types
-- `messages/en.json`, copy
+- `messages/{en,nl,es,fr,de,pt-BR}.json`, copy catalogues
+- `i18n/`, routing and navigation helpers (`@/i18n/navigation`)
 
 HTTP DTOs come from OpenAPI codegen. After backend API changes, from `ui/`: `npm run gen:api`.
 
@@ -40,4 +41,6 @@ npm run build          # production build
 npm run gen:api        # regenerate api.generated.ts from docs/api/openapi.json
 npm run gen:api:check  # fail if the generated client is stale
 npm run gen:rules      # regenerate rules.generated.ts from config/kirichess.rules.json
+npm run gen:rules:check # fail if RULES.md / rules.generated.ts are stale
+npm run gen:locale     # draft or --fill a locale catalogue from en.json
 ```

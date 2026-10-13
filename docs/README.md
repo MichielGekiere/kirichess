@@ -29,7 +29,7 @@ docs/
 │   ├── launch/            soft-launch post
 │   ├── chessvariants/     catalogue submission
 │   └── a11y/              NVDA pass
-└── audits/                check work (INDEX, PRIORITY_FIX, one report per letter)
+└── audits/                check work (INDEX, PROGRESS, letter reports + funding)
 ```
 
 ## What stays at the `docs/` root
@@ -55,7 +55,7 @@ docs/
 | Terms / privacy | [legal/TERMS.md](legal/TERMS.md), [legal/PRIVACY.md](legal/PRIVACY.md) |
 | Public HTTP API | [api/openapi.json](api/openapi.json); bots: [api/openapi-public.json](api/openapi-public.json) |
 | What to check | [audits/INDEX.md](audits/INDEX.md) |
-| Open weaknesses to fix | [audits/PRIORITY_FIX.md](audits/PRIORITY_FIX.md) |
+| What is still open from audits | [audits/PROGRESS.md](audits/PROGRESS.md) |
 | Origin and attribution | [game/CLAIMS.md](game/CLAIMS.md) |
 
 New standing docs go in one of the folders above, not next to this file.

@@ -19,10 +19,8 @@
 
   **AD.13 / public source of truth (2026-10-11):** development happens at
   https://github.com/MichielGekiere/kirichess — a clean import (no private history),
-  authored with GitHub noreply. Export mechanics:
-  [docs/ops/PUBLIC-SNAPSHOT.md](../ops/PUBLIC-SNAPSHOT.md). Cutover plan:
-  [docs/plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md](../plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md).
-  Pre-public history lives in the archived private `kirichess-archive` (not for linking).
+  authored with GitHub noreply. Pre-public history lives in the archived private
+  `kirichess-archive` (not for linking).
 
   **AD.12 / #14 done 2026-10-09** (Access off; public site live):
   - /rules → https://web.archive.org/web/20261009183825/https://kirichess.com/rules
@@ -32,7 +30,6 @@
 - [x] **Add an About / Origin page** to your platform when it exists. Being the place people actually *play* it is the strongest attribution channel there is, see how lichess credits variant inventors on its own variants page.
   ```
   **Done 2026-08-18:** `/about` (ROADMAP AD.2) carries who invented it, the date, the working
-  title, the paragraph of why in the owner's own voice, and the name's dedication. Not yet
-  reachable by anyone outside the owner, same Cloudflare Access gate as the rest of the site -
-  it becomes real the moment the site is public.
+  title, the paragraph of why in the owner's own voice, and the name's dedication. Public since
+  Access came off (2026-10-08); archive.org capture recorded under AD.12 above.
   ```

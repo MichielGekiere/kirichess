@@ -11,8 +11,6 @@ line on that finding in the category report.
 
 ### Decisions
 
-- **L-1-7.** Softened 2026-10-07 (no live link to the private working tree; TERMS §10 already future-tense). Remaining half is AD.13 / #11a (publish the snapshot).
-- **L-9-2 = O-4-1.** Restore, rewrite, or retire the export-snapshot script. The procedure is `docs/ops/PUBLIC-SNAPSHOT.md`. The cut itself has not been made.
 - **$3-2.** The donation minimum.
 - **B-2-8 = O-4-4.** Move the repo to a `kirichess` org, or not.
 - **I-9-3.** Dispatch-only ops probes, or move them off GitHub Actions.
@@ -39,8 +37,6 @@ line on that finding in the category report.
 - **M-2-1, M-2-2, M-2-5.** Record the press-kit clip; recapture the stale screenshots.
 - **O-3-2.** Post the Discord rules text.
 - **P-2-7.** Add `?src=` to the links you publish.
-- **L-9-1 = P-9-3.** Land one dated public record: publish the repo, or take an archive.org snapshot.
-
 ### Signature and counsel
 
 - **L-12-1, L-12-2, L-12-3.** The counsel brief, the three questions, and the standing-positions table.

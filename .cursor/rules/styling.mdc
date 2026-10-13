@@ -465,5 +465,5 @@ carries a meaning it is allowed to carry still needs a human. **A failure there 
 loosening a rule or adding to an allowlist is only right when this file changed too, in which case
 update the `.cursor/rules/styling.mdc` mirror in the same commit.
 
-[`docs/ops/UI-CHECKLIST.md`](../../docs/ops/UI-CHECKLIST.md) is the manual walk: every page, overlay
-and control with the states to check. It is a QA log, not a spec; this file is the spec.
+The manual UI walk (roadmap **#4** / **#4a**) closed 2026-09-24. This file is the standing spec;
+re-walk pages by eye when a change touches layout or elevation.

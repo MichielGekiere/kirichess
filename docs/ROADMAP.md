@@ -14,57 +14,36 @@
 > table summary does not repeat. Items marked `[Owner]` take an account, a signature, a
 > screen reader, or a click in someone else's dashboard.
 >
-> This table is open work only. Finished phases are in git history, not a second file. 9f.1,
-> **9f.2**, **10c.1**, the GitHub-hosted half of **10c.5**, and **AD.1 (#17)** are not
+> This table is open work only. Finished phases are in git history, not a second file. **#10**,
+> **9f.1**, **9f.2**, **10c.1**, the GitHub-hosted half of **10c.5**, and **AD.1 (#17)** are not
 > launch-gated. They stay in the table so the work is visible; do not treat them as launch blockers.
 
 
 
 ## Open work (execute in `#` order)
 
-**Re-ordered 2026-08-20** around two constraints: the working repo stays **private** through
-launch and after it (a clean public snapshot **is** now in this queue, **AD.13** at **#11a**; see
-[CLAIMS.md](game/CLAIMS.md)), and
-`kirichess.com` stays behind **Cloudflare Access** until **#12**.
+**Updated 2026-10-12.** The site is public (Access off 2026-10-08 / #12). Google OAuth (#13),
+archive.org snapshots (#14), the public source-of-truth repo (#11a / AD.13), patron badge go-live
+(#9), and the shutdown measurement (#11) are done and removed from this table. Detail stays in the
+phase sections and git history. Development is on
+[MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess).
 
-**Launch-gated** unless noted. **#9–#11a are the gated window** (Access on, working repo private).
-**#4 and #4a are done** (2026-09-24: [UI-CHECKLIST.md](ops/UI-CHECKLIST.md) walked, desktop and
-mobile, and the adjustments shipped). **9f.2 (NVDA) is not launch-gated** - code is done; the human
-pass sits after 9f.1. **AD.7 is done** (25 signups / 8 human games / 2 rolling-D7, read at +14d; not a table row). The play hour is
-**Fridays 20:00 UTC** (11a.4's banner is unblocked; the #4 layout gate is closed). **AD.4 is not in this queue** (declined 2026-09-04).
-**AD.1 is not in the gated window either** (moved after 8.7 on 2026-09-04: first players are the
-Reddit thread). **#10–#11 are the same window** (load test; Access still on by design). The UI walk
-they were waiting on is done.
-
-**#12 is the flip:** Access off. **AD.13 / #11a** is the public development repo
-(`MichielGekiere/kirichess`, clean import, source of truth for community + Fly) — not a read-only
-mirror while a private working tree stays forever.
-
-**#13–#16 are after the flip** (Google can fetch `/privacy`, archive.org can save `/rules` and
-`/about`, the catalogue can link the site, then the post). **#17 is after 8.7** (press kit; not
-launch-gated). The first room is r/chessvariants, not a coverage drop.
-
-**1 Sep has passed.** 10c.5 and 10c.1 are still not launch-gated, and August's Actions minutes
-are no longer why. Probes are disabled in the GitHub UI. The weekly dump is getting a runner and
-failing on the R2 upload. Do not block 8.7 on either. Development is on the public repo after AD.13.
+**Launch-gated left:** **#15** (chessvariants.com) and **#16** (soft-launch post). **#16 is the
+launch.** The first room is r/chessvariants, not a coverage drop. Play hour: **Fridays 20:00 UTC**.
+**#10**, **#17**, **10c.5**, **10c.1**, **9f.1**, and **9f.2** stay visible but are not launch
+blockers. Do not block 8.7 on probes or the offsite backup.
 
 
 | # | When | Item | Action | Unblocks |
 | --- | ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| 9 | **Done** 2026-10-07 | **FS.4a** patron badge go-live | Deploy and the webhook secret were done 2026-09-26. Owner confirmed a signed-in Stripe checkout grants the badge on `/profile` (2026-10-07). | Donors get the badge the page promises. |
-| 10 | Now, before #12 | **9e.8** load test | **Ran 2026-09-26/27** on production `shared-cpu-1x` / 512 MB. Saved files only. Before append-only plies: `prod-ladder-n50.json` pass; `prod-ladder-n100.json` save queue ~60→90, client p95 1511 ms, 85% of planned moves, 0 hub errors, 100 games still live at the end of the window (overall Void). After `AppendGameMoves` (image `13c9b858`, [PR #75](https://github.com/MichielGekiere/kirichess/pull/75)): `append-ladder-n50.json` pass (p95 155 ms, queue empty); `append-ladder-n100.json` held (queue mean ~3, p95 530 ms, 0 hub errors, overall Warn). No `n150` file, so do not quote a 150-game rung. **Steady cap from the files is 100 games.** Fly CPU was not sampled (the harness reads local Docker and printed 0%). **Next:** read `fly_instance_cpu` on a 100-game rung. Save a result file before any higher rung changes the cap. The old "a bigger machine will not help" note is from the pre-batch code and does not apply here. | The number DH.1 rests on: 100 games on this VM. |
-| 11 | **Done** 2026-10-07 | **10a.3** shutdown measurement | Measured 2026-09-26: a restart flushed 100 live games in 550 ms (2 batches). Copied into [DEPLOYMENT.md](ops/DEPLOYMENT.md) §4.1. `kill_timeout` is 30 s, so the flush fits. | Stated shutdown budget with a measured fit. |
-| 11a | **Done** 2026-10-11 (cutover) | **AD.13** public source of truth | Public repo [MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess): clean import (**no private history**), community issues/PRs, Fly deploys from this remote. Pre-public history archived as `kirichess-archive`. Plan: [PUBLIC-SOURCE-OF-TRUTH.md](plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md). **Does not establish invention priority** (#14 / #15 still load-bearing). | Public code under a license; AD.3 gets a URL; `SECURITY.md` resolves; deploys move off the archive. |
-| 12 | Launch day - the flip | **DH.3** remove Access | Remove the Cloudflare Access application. Load `kirichess.com` in a private window that has never authenticated. Access is the only constraint that changes on launch day. **I-5-5, same day:** drop `302` from `betteruptime_monitor.edge_site`'s `expected_status_codes` in `infra/betterstack/main.tf` (marked `# DH.3: drop 302` on the line), restore `follow_redirects`/`remember_cookies` to their defaults, and update `BetterStackAlertingDriftTests` to expect `[200]` - once Access is off, a 302 from the apex is a redirect loop or a misconfiguration, not a login wall, and leaving it accepted means that never pages. | Site reachable by strangers. |
-| 13 | Launch day, after #12 | **DH.5** Google OAuth | Consent-screen URLs are fetched by Google and sit behind Access today. Do this after #12, not before. Redirect URI is `https://api.kirichess.com/signin-google`. | 8a.2's last obligation; live OAuth. |
-| 14 | Launch day, after #12 | **AD.12** archive snapshot | Save `/rules` and `/about` to archive.org; record URLs in [CLAIMS.md](game/CLAIMS.md). Needs the public site - a Save Page Now before #12 captures the Access login. | Third-party citable timestamp. |
-| 15 | After #12 | **AD.3** chessvariants.com | Send [SUBMISSION-DRAFT.md](plans/chessvariants/SUBMISSION-DRAFT.md). Find submission route, pick the inventor name. **Not gated on 8.7**, but wait for #12 - the draft links `kirichess.com`. **Link** [MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess) if a source URL helps; never `kirichess-archive`. | Earliest public dated record of the invention. |
-| 16 | After #12–#15 | **8.7** launch post | [POST-DRAFT.md](plans/launch/POST-DRAFT.md) + pre-flight checklist. r/chessvariants first, no clip, no journalist pitch. The first players are people who read the rules and queued. | The launch. |
+| 15 | Now | **AD.3** chessvariants.com | Send [SUBMISSION-DRAFT.md](plans/chessvariants/SUBMISSION-DRAFT.md). Find submission route, pick the inventor name. **Not gated on 8.7.** Link [MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess) if a source URL helps; never `kirichess-archive`. | Earliest public dated record of the invention. |
+| 16 | Now | **8.7** launch post | [POST-DRAFT.md](plans/launch/POST-DRAFT.md) + pre-flight checklist. r/chessvariants first, no clip, no journalist pitch. The first players are people who read the rules and queued. | The launch. |
+| 10 | Not a launch gate | **9e.8** load test | **Ran 2026-09-26/27** on production `shared-cpu-1x` / 512 MB. Steady cap from the files is **100 games.** Fly CPU was not sampled (the harness reads local Docker and printed 0%). **Next:** read `fly_instance_cpu` on a 100-game rung. Save a result file before any higher rung changes the cap. Capacity follow-up after Redis / second machine — not a soft-launch gate. | Honest CPU reading behind the 100-game cap. |
 | 17 | After #16 | **AD.1** press kit recapture | **Not launch-gated. Do not block 8.7.** First players come from the Reddit post, not from coverage. Recapture after the thread has run so the first room is organic. Pick a clip from [press-kit/README.md](../press-kit/README.md) (clutch queen vs opening swing). Desktop `lg` recapture + `convert.mjs`. Local Playwright. Capture the post-8.8a layout (#4a closed 2026-09-24). | A stranger who wants to cover it later has footage. Not a launch asset. |
-| - | Not a launch gate | **10c.5** GitHub dispatch | **Not launch-gated. Do not block 8.7.** Terraform, `SYNTHETIC_API_TOKEN`, and both heartbeat URL secrets landed 2026-08-20. The 15-minute cron is in `ops-probes.yml`, and GitHub has the workflow **disabled_manually**, so it is not spending minutes. Last scheduled attempts are 2026-08-22 ([32602717028](https://github.com/MichielGekiere/kirichess/actions/runs/32602717028)): both jobs died in ~2 s with no steps. Nothing has run in September. **Owner:** re-enable the workflow and dispatch once. The **working** repo stays private, and AD.13's snapshot carries no workflows, so #11a does **not** unblock this. | Synthetic + Neon heartbeats. |
-| - | Not a launch gate | **10c.1** off-provider backup | **Not launch-gated. Do not block 8.7.** Bucket, token, secrets, and the `.eu.` endpoint are in. August dispatches (32395327365, 32395991126) never started a runner. The Sunday cron on `main` is active and ran 13, 20, and 27 Sep; each failed. Latest [36313475991](https://github.com/MichielGekiere/kirichess/actions/runs/36313475991) started a runner and died uploading to R2 (`SSLV3_ALERT_HANDSHAKE_FAILURE` on `*.eu.r2.cloudflarestorage.com`). Neon is still the only copy. GitHub's DPA is not accepted ([DPA-CHECKLIST.md](legal/DPA-CHECKLIST.md)). The working tree turns the cron off until that acceptance is on `main`; until then Sunday keeps firing. Do not dispatch another run before the DPA. After it, the leftover is the TLS upload. | Second copy of every game, rating and account. |
+| - | Not a launch gate | **10c.5** GitHub dispatch | **Not launch-gated. Do not block 8.7.** Terraform, `SYNTHETIC_API_TOKEN`, and both heartbeat URL secrets landed 2026-08-20. The 15-minute cron is in `ops-probes.yml`, and GitHub has the workflow **disabled_manually**, so it is not spending minutes. Last scheduled attempts are 2026-08-22 ([32602717028](https://github.com/MichielGekiere/kirichess/actions/runs/32602717028)): both jobs died in ~2 s with no steps. **Owner:** re-enable the workflow and dispatch once. | Synthetic + Neon heartbeats. |
+| - | Not a launch gate | **10c.1** off-provider backup | **Not launch-gated. Do not block 8.7.** Bucket, token, secrets, and the `.eu.` endpoint are in. Sunday cron runs have failed on R2 upload (`SSLV3_ALERT_HANDSHAKE_FAILURE` on `*.eu.r2.cloudflarestorage.com`). Neon is still the only copy. GitHub's DPA is not accepted ([DPA-CHECKLIST.md](legal/DPA-CHECKLIST.md)). Do not dispatch another run before the DPA. After it, the leftover is the TLS upload. | Second copy of every game, rating and account. |
 | - | Parked | **9f.1** tournaments | **Not launch-gated. Do not start.** Trigger judged 2026-08-16: not yet. AD.7's 25 / 8 / 2 at +14d does not unpark this. Revisit when a Friday 20:00 UTC hour produces two concurrent human games without the owner filling a seat. | Revisit when a Friday hour fills without the owner. |
-| - | After 9f.1 | **9f.2** NVDA pass | **Not launch-gated.** Code is done (`AccessibleBoard`, announcements, P-5 gaps 2026-09-04). Remaining: the ~40 min scripted pass in [NVDA-PASS.md](plans/a11y/NVDA-PASS.md). After tournaments because launch will not have screen-reader traffic worth gating on, and a volunteer can reach the site after #12. Do not claim WCAG until this has been run. | Closes 9f.2 (accessibility verification). |
+| - | After 9f.1 | **9f.2** NVDA pass | **Not launch-gated.** Code is done (`AccessibleBoard`, announcements, P-5 gaps 2026-09-04). Remaining: the ~40 min scripted pass in [NVDA-PASS.md](plans/a11y/NVDA-PASS.md). After tournaments because launch will not have screen-reader traffic worth gating on. Do not claim WCAG until this has been run. | Closes 9f.2 (accessibility verification). |
 
 
 
@@ -76,10 +55,9 @@ without a pre-recruited founding cohort - do not put it back in the table). **AD
 task** (#17, after 8.7; not a launch gate). **AD.5 is a pointer at 11a.4** rather than a second
 task, so it should be ticked with it. FS.4's
 gate on FS.3 is released now that FS.3 is done, but it stays out of order on its own terms, being
-explicitly post-traction. **FS.4a (#9) is not FS.4 landing early:** it is the badge half only, built
-2026-08-23 to resolve L-7-4, and it gates nothing else. Patreon, recurring paid tiers and the payout
-handling remain parked under FS.4, and ticking #9 does not tick FS.4. 8a.2's own work is finished and is parked behind DH.5 and 8.7, not behind
-code.
+explicitly post-traction. **FS.4a (#9) landed** (badge half only, 2026-10-07); Patreon, recurring
+paid tiers and the payout handling remain parked under FS.4. **DH.5 / #13 landed** (2026-10-09);
+8a.2's leftover is gone with it.
 
 ---
 
@@ -127,9 +105,9 @@ code.
   ```
   about tutorial copy that had nothing to do with it. [CLAIMS.md](game/CLAIMS.md).
 
-  _**8.8 was a fourth trap, added 2026-08-19, and it is closed.** Walk
-  [UI-CHECKLIST.md](ops/UI-CHECKLIST.md) on desktop and mobile (**#4**) and ship the adjustments
-  (**8.8a / #4a**). Both closed **2026-09-24**. The visual gate is no longer in front of DH.3._
+  _**8.8 was a fourth trap, added 2026-08-19, and it is closed.** Walk the UI checklist on desktop
+  and mobile (**#4**) and ship the adjustments (**8.8a / #4a**). Both closed **2026-09-24**. The
+  visual gate is no longer in front of DH.3._
 
   _**This item collected prerequisites from three separate reviews on 2026-08-17, and the marketing
   one added four.** From [Adoption & Distribution](#adoption--distribution-cross-cutting--not-a-phase):
@@ -2045,8 +2023,6 @@ hosting; browser WebSockets would still go **direct to the Fly backend**, not th
   is where development, review, and Fly deploys happen. Pre-public history is
   `MichielGekiere/kirichess-archive` (do not link). Clean import still required: private commit
   objects carry personal / student / machine identities; never push or fork that history.
-  Plan: [PUBLIC-SOURCE-OF-TRUTH.md](plans/open-source/PUBLIC-SOURCE-OF-TRUTH.md). Export appendix:
-  [PUBLIC-SNAPSHOT.md](ops/PUBLIC-SNAPSHOT.md).
-
   **What it does not buy.** Invention priority. A single public-root commit does not prove a
-  2026-07-21 invention date. **AD.3 and AD.12 stay load-bearing.**
+  2026-07-21 invention date. **AD.12 is done** (archive.org 2026-10-09). **AD.3 stays
+  load-bearing.**

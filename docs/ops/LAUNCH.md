@@ -88,7 +88,7 @@ Outages: watch #announcements. First reply from the maintainer is "aware, invest
 Optional before open (do not block #12 on these; they are still worth doing if close):
 
 - One successful restore or offsite backup story ([DEPLOYMENT.md](DEPLOYMENT.md) §5; ROADMAP 10c.1).
-- Revoke a wide org deploy token once per-app deploy is on `main` ([PRIORITY_FIX.md](../audits/PRIORITY_FIX.md) B-4-2).
+- Revoke a wide org deploy token once per-app deploy is on `main` ([B.md](../audits/B.md) B-4-2).
 
 ### D. What you will tell people
 

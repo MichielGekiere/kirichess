@@ -292,8 +292,7 @@ Do not assign **$4**, **9f.1**, or anything that reopens the standing positions.
 ## Applying the findings
 
 Every report is written and its **Done** box is ticked. What is still blocked or waiting on you
-is [PROGRESS.md](PROGRESS.md). The open weaknesses and bugs, in fix order, are
-[PRIORITY_FIX.md](PRIORITY_FIX.md). The category reports hold the original findings.
+is [PROGRESS.md](PROGRESS.md). The category reports hold the original findings.
 
 ---
 

@@ -4,7 +4,7 @@ Chess where the clock is the battlefield: captures, moves, and checks add or rem
 
 Play at [kirichess.com](https://kirichess.com). Rules: [kirichess.com/rules](https://kirichess.com/rules). Public / bot API: [kirichess.com/developers](https://kirichess.com/developers).
 
-KiriChess is free, independent, and run at cost by one person: no ads, no paywalled features, donations optional. It is not a company and not a registered non-profit. The software is Apache-2.0; the rules manual is CC BY 4.0. **This repository is the public source of truth** for development, issues, pull requests, and production deploys. Clone: [github.com/MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess). How the clean import was cut (no private history): [`docs/ops/PUBLIC-SNAPSHOT.md`](docs/ops/PUBLIC-SNAPSHOT.md).
+KiriChess is free, independent, and run at cost by one person: no ads, no paywalled features, donations optional. It is not a company and not a registered non-profit. The software is Apache-2.0; the rules manual is CC BY 4.0. **This repository is the public source of truth** for development, issues, pull requests, and production deploys. Clone: [github.com/MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess). The public tree is a clean import (no private git history).
 
 KiriChess is an original chess variant invented by Michiel Gekiere in February 2026. The project began in 2026 under the working title Clockstarved; later renamed to KiriChess. Origin: [kirichess.com/about](https://kirichess.com/about).
 

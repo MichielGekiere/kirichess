@@ -51,7 +51,9 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v3
+      # init and analyze must share one SHA; a Dependabot bump of only init caused
+      # "Loaded a configuration file for version '4.38.2', but running version '3.37.7'".
+      - uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
@@ -64,7 +66,7 @@ jobs:
           dotnet restore KiriChess.slnx
           dotnet build KiriChess.slnx --no-restore -c Release
 
-      - uses: github/codeql-action/analyze@f3712979fa5f215279b101dd0a2e3bdfb4353324 # v3
+      - uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           category: "/language:${{ matrix.language }}"
           # SARIF upload needs GitHub code scanning (free on public repos).

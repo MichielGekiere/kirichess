@@ -81,7 +81,7 @@ Or run the whole ladder with `run-ladder.ps1` / `run-ladder.sh` (see below).
 | Flag                                     | Default                              | Meaning                                                                                                                                                                                                                                                                                                                                                |
 | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `--games N`                              | required                             | Target concurrent live games. The harness registers `2N` accounts.                                                                                                                                                                                                                                                                                     |
-| `--pool`                                 | `steal3`                             | Matchmaking pool (`docs/RULES.md` presets). Eclipse (900s) is the only pool with a long enough clock to survive the window - see README § Decision 2.                                                                                                                                                                                                  |
+| `--pool`                                 | `steal3`                             | Matchmaking pool (`docs/RULES.md` presets). Eclipse (`steal3`, 900s) is the only pool with a long enough clock to survive a typical measurement window without flagging from think-time alone.                                                                                                                                                          |
 | `--api`                                  | `http://localhost:8080`              | Base URL of the backend.                                                                                                                                                                                                                                                                                                                               |
 | `--scrape-token`                         | (empty)                              | Bearer token for `GET /metrics` - must match `Metrics__ScrapeToken`.                                                                                                                                                                                                                                                                                   |
 | `--think-ms` / `--jitter-ms`             | `3000` / `1000`                      | Per-side think time, uniform jitter `±jitter-ms`.                                                                                                                                                                                                                                                                                                      |
@@ -155,12 +155,12 @@ loadtest/
     Program.cs            - CLI parsing, orchestration, result JSON (top-level statements)
     LoadOptions.cs         - parsed run configuration
     JsonDefaults.cs        - shared System.Text.Json options (case-insensitive; see doc comment)
-    WireDtos.cs             - the five minimal wire records (README § Decision 2)
+    WireDtos.cs             - the five minimal wire records the harness needs
     BotPlayer.cs            - one account: HTTP register + both hub connections + play loop
     GameCoordinator.cs      - shared aggregator for client-observed latency/counters
     MetricsScraper.cs       - GET /metrics, Prometheus text parser, delta + bucket quantiles
     ContainerStats.cs       - `docker stats` sampler + the harness's own CPU sampler
-    RunResult.cs            - the JSON shape, the § Decision 6 criteria, the human summary table
+    RunResult.cs            - the JSON shape, pass/fail criteria, the human summary table
   results/
     *.json                 - one file per rung, committed raw evidence
 ```
@@ -175,12 +175,12 @@ per mean think interval, not two. This is not a guess: an N=10 smoke rung (`load
 smoke-n10.json`, 30s window) sustained 3.30 moves/s with harness CPU at ~0% of the host the entire
 time - i.e. the generator was never remotely close to being the bottleneck - which matches
 `N * 1000 / think_ms` (3.33) almost exactly and is roughly **half** of the literal formula's 6.67.
-Using the literal formula would fail the generator-honesty criterion (§ Decision 6: "achieved moves/s
-at least 90% of planned") on every single rung of the ladder, regardless of server health, purely
-from an arithmetic mismatch between the formula and the alternating-turn traffic shape the same
-plan's README § Decision 2 specifies. `Program.cs` uses `N * 1000.0 / think_ms` instead - the
-physically achievable ceiling for N alternating-turn games at the configured cadence - and this
-file's doc comment repeats the reasoning at the point of use.
+Using the literal formula would fail the generator-honesty criterion in `RunResult.cs`
+("achieved moves/s at least 90% of planned") on every single rung of the ladder, regardless of
+server health, purely from an arithmetic mismatch between the formula and the alternating-turn
+traffic shape this harness actually drives. `Program.cs` uses `N * 1000.0 / think_ms` instead - the
+physically achievable ceiling for N alternating-turn games at the configured cadence - and the
+doc comment at the point of use repeats this reasoning.
 
 ## Deviations from the task file's exact layout
 

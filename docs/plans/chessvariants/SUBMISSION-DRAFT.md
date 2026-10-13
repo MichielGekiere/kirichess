@@ -1,48 +1,4 @@
-# AD.3 - the chessvariants.com catalogue entry, drafted
-
-> **Drafted 2026-08-18. Numbers rechecked 2026-10-09** against live `/rules` and
-> `npm --prefix ui run gen:rules:check` (clean). [CLAIMS.md](../../game/CLAIMS.md) calls this
-> "probably the single highest-leverage move available". The public development repo
-> ([github.com/MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess)) is a clean
-> import with no private history, so it does **not** prove a 2026-07-21 invention date; this
-> catalogue entry remains the earliest dated, third-party-hosted record of the invention that can
-> establish priority. Numbers below are taken from [RULES.md](../../RULES.md), generated
-> from `config/kirichess.rules.json`, the same document the engine loads at runtime - if a rule is
-> retuned before this is sent, regenerate RULES.md and re-check the numbers here.
->
-> **What this draft does not confirm.** chessvariants.com and its `.org` mirror both returned
-> HTTP 403 (most likely bot protection rather than the site being down), and a web search did not
-> surface a current "submit a variant" page with a specific address or form. The submission route
-> still has to be found on the site. Historically the site has taken new-variant pages by email to
-> its editor for posting, and separately runs a moderated "Invention/Design Competitions" and
-> reader-submission track, but neither is confirmed current fact from this draft; check the site's
-> own contact/submit page. What follows is the **content** to send once that route is found: a
-> page-ready description in the site's usual register (rules stated plainly, not marketing copy)
-> plus a shorter cover-note version for an email or form with a body-length limit.
->
-> **Inventor name:** Michiel Gekiere (filled below). Every later citation points back to whatever
-> name is on this entry.
-
-## Before you send
-
-- [x] Confirm the numbers below still match a freshly generated [RULES.md](../../RULES.md)
-      (`npm --prefix ui run gen:rules:check` ok 2026-10-09 against live `/rules`). Re-check if a
-      rule is retuned before sending.
-- [x] Inventor name: Michiel Gekiere (filled below).
-- [x] Cloudflare Access is off (roadmap **#12**, 2026-10-08) so `kirichess.com` and `/rules` load
-      for the editor. Link the public repo
-      [github.com/MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess) if a
-      source URL helps; never link `kirichess-archive`.
-- [ ] Find the current submission route on chessvariants.com itself and send the entry below
-      through it.
-- [ ] Once posted, save the resulting page's URL and record it in [CLAIMS.md](../../game/CLAIMS.md)'s
-      recognition checklist, next to this action.
-
----
-
-## The catalogue entry
-
-> Copy from here down for the full page-style submission.
+# KiriChess — chessvariants.com catalogue entry
 
 **Name:** KiriChess
 
@@ -103,10 +59,7 @@ https://kirichess.com and https://kirichess.com/rules.
 
 ---
 
-## Cover note (short form, for an email or a form with a length limit)
-
-> Copy from here down if the submission route turns out to be a plain message rather than a
-> page-style entry.
+## Cover note
 
 Hi, I would like to submit an original variant, **KiriChess**, to the catalogue.
 

@@ -609,13 +609,15 @@ resource "betteruptime_monitor" "edge_site" {
   critical_alert = true
 }
 
-# Period 900 / grace 900 matches the ops-probes workflow's "every 15 minutes, off the hour".
-# GitHub cron on a quiet personal repo can slip by tens of minutes; the grace is that slip, not
-# a preference for slow alerts. A missed ping for 30 minutes is the page.
+# Period 21600 / grace 21600 (6h + 6h). ops-probes.yml still cron's every 15 minutes, but GitHub
+# Actions schedule on this repo routinely slips by several hours (observed gaps of ~3-7h, spikes
+# past 9h). The old 900/900 window (page after 30 minutes of silence) false-paged continuously even
+# while every completed run succeeded and pinged. 12 hours of silence is the page now: still catches
+# a silently disabled workflow inside half a day, without paging on GitHub's shared-runner queue.
 resource "betteruptime_heartbeat" "synthetic_play" {
   name   = "KiriChess synthetic play${local.name_suffix}"
-  period = 900
-  grace  = 900
+  period = 21600
+  grace  = 21600
 
   policy_id = local.policy_id
 
@@ -629,8 +631,8 @@ resource "betteruptime_heartbeat" "synthetic_play" {
 
 resource "betteruptime_heartbeat" "neon_storage" {
   name   = "KiriChess Neon watch${local.name_suffix}"
-  period = 900
-  grace  = 900
+  period = 21600
+  grace  = 21600
 
   policy_id = local.policy_id
 

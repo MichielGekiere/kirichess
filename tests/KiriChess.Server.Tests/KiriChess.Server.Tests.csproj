@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="10.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.13" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
     <!-- Transitive pin: Testcontainers 4.13.0 -> Docker.DotNet.Enhanced -> SSH.NET 2025.1.0, which has
          a patched path-traversal CVE (GHSA-q939-rpr3-3284) in ScpClient.Download(), a code path this repo

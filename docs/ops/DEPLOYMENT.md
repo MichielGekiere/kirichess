@@ -1118,11 +1118,10 @@ Heartbeats plus GitHub Actions stay inside the free-tier 10-monitor allowance. T
    terraform output -raw neon_watch_heartbeat_url     | gh secret set NEON_WATCH_HEARTBEAT_URL
    ```
 
-3. `NEON_API_KEY` is already set (9c.4). **Owner step (not launch-gated):** the workflow is
-   **disabled_manually** on GitHub so it is not spending minutes. Re-enable
-   [.github/workflows/ops-probes.yml](../../.github/workflows/ops-probes.yml) and dispatch **Ops
-   probes (10c.5)** once from the Actions tab (see ROADMAP.md). Until that first ping, the
-   heartbeats will open an incident after 30 minutes (`period` 900 + `grace` 900).
+3. `NEON_API_KEY` is already set (9c.4). The workflow is enabled and cron'd every 15 minutes;
+   GitHub schedule on this repo routinely slips by several hours, so the heartbeats use
+   `period` 21600 + `grace` 21600 (page after about 12 hours of silence). Dispatch **Ops
+   probes (10c.5)** once from the Actions tab after any apply that recreates the heartbeat URLs.
 
 `BetterStackAlertingDriftTests` and `CiWorkflowDriftTests` fail the build if the Terraform
 resources, the two scripts, or the workflow's schedule disappear.

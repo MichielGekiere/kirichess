@@ -4,15 +4,17 @@ import { useTranslations } from "next-intl";
 import { spokenTime } from "@/lib/a11y";
 import type { Side } from "@/lib/types";
 import {
-  TimeDeltaLayer,
-  type TimeDeltaPopup,
-} from "@/components/TimeDeltaLayer";
+  ClockDeltaLine,
+  deltaTintClass,
+  type ClockDelta,
+} from "@/components/ClockDeltaLine";
 
 interface ClockProps {
   side: Side;
   seconds: number;
   active: boolean;
-  popups: TimeDeltaPopup[];
+  /** The last move's effect on this clock, shown under the digits. Omitted where there is none (replay, spectating). */
+  delta?: ClockDelta | null;
   /**
    * `full` (default) is the original stacked face at every width. `compact` is a
    * horizontal bar with text-3xl digits below lg, and the original stacked
@@ -62,7 +64,7 @@ export function Clock({
   side,
   seconds,
   active,
-  popups,
+  delta = null,
   variant = "full",
   frozen = false,
 }: ClockProps) {
@@ -91,7 +93,7 @@ export function Clock({
       aria-label={accessibleName}
       className={`relative overflow-hidden border text-center transition-colors bg-[var(--surface)] ${
         compact
-          ? "flex items-center justify-between gap-3 px-4 py-2 lg:block lg:px-4 lg:py-4"
+          ? "grid grid-cols-[auto_1fr] items-center gap-x-3 px-4 py-2 lg:block lg:px-4 lg:py-4"
           : "px-4 py-4"
       } ${
         liveActive
@@ -99,16 +101,28 @@ export function Clock({
           : "border-[var(--border)]"
       }`}
     >
+      {/* Compact below lg is a two-row grid: side label over the delta line on the left, digits
+          spanning both rows on the right. At lg the parent turns back into a block and the DOM
+          order (label, digits, delta) is the stacked face, so the grid placement goes inert. */}
       <div
         aria-hidden="true"
-        className="text-sm font-semibold uppercase tracking-widest text-muted"
+        className={`text-sm font-semibold uppercase tracking-widest text-muted ${
+          compact ? "col-start-1 row-start-1 text-left lg:text-center" : ""
+        }`}
       >
         {sideLabel}
       </div>
-      <div className={compact ? "flex flex-col items-end lg:block" : ""}>
+      <div
+        className={
+          compact
+            ? "col-start-2 row-span-2 row-start-1 flex flex-col items-end lg:block"
+            : ""
+        }
+      >
         <div
+          key={delta?.id}
           aria-hidden="true"
-          className={`flex items-baseline font-mono font-black tabular-nums leading-none ${
+          className={`${deltaTintClass(delta)} flex items-baseline font-mono font-black tabular-nums leading-none ${
             compact
               ? "justify-end text-3xl lg:mt-1 lg:justify-center lg:text-5xl"
               : "mt-1 justify-center text-5xl"
@@ -136,7 +150,14 @@ export function Clock({
           </div>
         )}
       </div>
-      <TimeDeltaLayer popups={popups} />
+      <ClockDeltaLine
+        delta={delta}
+        className={
+          compact
+            ? "col-start-1 row-start-2 justify-start lg:mt-1 lg:justify-center"
+            : "mt-1 justify-center"
+        }
+      />
     </div>
   );
 }

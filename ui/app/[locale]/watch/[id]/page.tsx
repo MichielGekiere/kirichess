@@ -416,7 +416,6 @@ function WatchContent({ gameId }: { gameId: string }) {
               seconds={black}
               active={state.sideToMove === "Black" && !gameOver && connected}
               frozen={!connected}
-              popups={[]}
             />
           }
           gapMeter={<GapMeter gapSeconds={gapFromClocks(white, black)} />}
@@ -437,7 +436,6 @@ function WatchContent({ gameId }: { gameId: string }) {
               seconds={white}
               active={state.sideToMove === "White" && !gameOver && connected}
               frozen={!connected}
-              popups={[]}
             />
           }
           board={

@@ -94,23 +94,37 @@ samp {
     "Liberation Mono", "Courier New", monospace;
 }
 
-@keyframes time-delta-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  15% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-28px);
+/* A move's clock effect: the digits flash the delta's hue and settle back to their own colour
+   (no `to` frame, so the animation ends on whatever the clock's state colour is), and the
+   `ClockDeltaLine` under them fades in once. Nothing moves; the clock stays readable throughout. */
+@keyframes clock-tint-gain {
+  from {
+    color: var(--gain);
   }
 }
 
-.time-delta-popup {
-  animation: time-delta-rise 1.2s ease-out forwards;
+@keyframes clock-tint-loss {
+  from {
+    color: var(--loss);
+  }
+}
+
+@keyframes clock-delta-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.clock-tint-gain {
+  animation: clock-tint-gain 700ms ease-out;
+}
+
+.clock-tint-loss {
+  animation: clock-tint-loss 700ms ease-out;
+}
+
+.clock-delta-in {
+  animation: clock-delta-in 200ms ease-out;
 }
 
 /* 404: the knight's illegal leap to i9. Reduced-motion users get the
@@ -223,9 +237,8 @@ samp {
   }
 }
 
-/* Phase 9d.4: `TimeDeltaLayer` (the clock's +Ns/-Ns popups) is Phase 4's "the clock is the
-   star" feature and is deliberately animation-heavy; for a `prefers-reduced-motion` user that
-   is exactly the kind of motion that is unusable or nauseating rather than delightful. Turn
+/* Phase 9d.4: this began with the clock's floating +Ns/-Ns popups, the kind of motion that is
+   unusable or nauseating rather than delightful for a `prefers-reduced-motion` user. Turn
    every CSS animation and transition in the app effectively instant instead of trying to
    enumerate each animated component by name. */
 @media (prefers-reduced-motion: reduce) {

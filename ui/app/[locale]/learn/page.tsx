@@ -12,7 +12,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { TutorialClocks } from "@/components/learn/TutorialClocks";
 import { TutorialProgress } from "@/components/learn/TutorialProgress";
 import { TutorialStepCard } from "@/components/learn/TutorialStepCard";
-import type { TimeDeltaPopup } from "@/components/TimeDeltaLayer";
+import type { ClockDelta } from "@/components/ClockDeltaLine";
 import { remainingAfterThink, TUTORIAL_STEPS } from "@/lib/tutorial";
 import { recordCounter } from "@/lib/api";
 import { COUNTER_KEYS } from "@/lib/analytics";
@@ -56,9 +56,9 @@ export default function LearnPage() {
   // only while a board is up; the opener's frozen 180-vs-7 clocks pass ticking: false.
   const syncAtRef = useRef(0);
   const [clockNow, setClockNow] = useState(0);
-  const [whitePopups, setWhitePopups] = useState<TimeDeltaPopup[]>([]);
-  const [blackPopups, setBlackPopups] = useState<TimeDeltaPopup[]>([]);
-  const popupCounter = useRef(0);
+  const [whiteDelta, setWhiteDelta] = useState<ClockDelta | null>(null);
+  const [blackDelta, setBlackDelta] = useState<ClockDelta | null>(null);
+  const deltaCounter = useRef(0);
   // Which ply of `step.scriptedUci` is next. Only meaningful for the check and repetition steps;
   // every other step ignores it (scriptedUci is undefined, so nothing reads this).
   const [scriptedPlyIndex, setScriptedPlyIndex] = useState(0);
@@ -79,8 +79,8 @@ export default function LearnPage() {
     const origin = performance.now();
     syncAtRef.current = origin;
     setClockNow(origin);
-    setWhitePopups([]);
-    setBlackPopups([]);
+    setWhiteDelta(null);
+    setBlackDelta(null);
     setScriptedPlyIndex(0);
     setChess(step.fen ? new Chess(step.fen) : null);
   }, [stepIndex, step]);
@@ -132,15 +132,26 @@ export default function LearnPage() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [stepIndex, canGoNext]);
 
-  function spawnPopup(side: Side, amount: number) {
-    if (amount === 0) return;
-    const id = `t${popupCounter.current++}`;
-    const popup: TimeDeltaPopup = { id, amount };
-    const setter = side === "White" ? setWhitePopups : setBlackPopups;
-    setter((prev) => [...prev, popup]);
-    setTimeout(() => {
-      setter((prev) => prev.filter((p) => p.id !== id));
-    }, 1300);
+  /**
+   * The tutorial only has each side's net, not the per-event breakdown the live game gets from the
+   * hub, so the line under each clock is the amount alone. The one exception is a nullified
+   * repetition, where the label is the whole lesson.
+   */
+  function showClockDeltas(
+    mover: Side,
+    moverDelta: number,
+    opponentDelta: number,
+    nullified: boolean,
+  ) {
+    const id = deltaCounter.current++;
+    const moverItems = nullified
+      ? [{ amount: 0, type: "RepetitionNullified" as const }]
+      : [{ amount: moverDelta }];
+    const opponentItems = [{ amount: opponentDelta }];
+    const white = mover === "White" ? moverItems : opponentItems;
+    const black = mover === "White" ? opponentItems : moverItems;
+    setWhiteDelta({ id, items: white });
+    setBlackDelta({ id, items: black });
   }
 
   function costFor(from: string, to: string): number | undefined {
@@ -208,7 +219,6 @@ export default function LearnPage() {
     const opponentDelta = nullified ? 0 : rawOpponentDelta;
 
     const mover = sideOf(currentFen);
-    const opponent: Side = mover === "White" ? "Black" : "White";
 
     // Fold think time into the stored remaining before applying the event prices, otherwise the
     // display would jump back up when the move lands (stored remaining still had the pre-think
@@ -233,8 +243,7 @@ export default function LearnPage() {
     setBlackSeconds(nextBlack);
     syncAtRef.current = now;
     setClockNow(now);
-    spawnPopup(mover, moverDelta);
-    spawnPopup(opponent, opponentDelta);
+    showClockDeltas(mover, moverDelta, opponentDelta, nullified);
 
     setCurrentFen(newFen);
     setLastMoveUci(uci);
@@ -386,8 +395,8 @@ export default function LearnPage() {
                   whiteSeconds={displayClocks.white}
                   blackSeconds={displayClocks.black}
                   activeSide={activeSide}
-                  whitePopups={whitePopups}
-                  blackPopups={blackPopups}
+                  whiteDelta={whiteDelta}
+                  blackDelta={blackDelta}
                   orientation="vertical"
                 />
               </div>
@@ -400,8 +409,8 @@ export default function LearnPage() {
                 whiteSeconds={displayClocks.white}
                 blackSeconds={displayClocks.black}
                 activeSide={activeSide}
-                whitePopups={whitePopups}
-                blackPopups={blackPopups}
+                whiteDelta={whiteDelta}
+                blackDelta={blackDelta}
                 orientation="horizontal"
               />
             </div>

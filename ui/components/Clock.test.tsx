@@ -10,7 +10,6 @@ function renderClock(overrides: Partial<ComponentProps<typeof Clock>> = {}) {
     side: "White",
     seconds: 65,
     active: false,
-    popups: [],
   };
   return render(
     <NextIntlClientProvider locale="en" messages={en}>

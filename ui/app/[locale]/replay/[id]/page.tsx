@@ -4,6 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { EVENT_LABEL_KEY } from "@/components/ClockDeltaLine";
 import {
   IconCheck,
   IconDownload,
@@ -42,7 +43,7 @@ import { getReplay, gamePgnUrl, ApiError } from "@/lib/api";
 import { PRESETS, isPresetKey, economyOf } from "@/lib/presets";
 import { soundForReplayStep } from "@/lib/chessSounds";
 import { useChessSounds } from "@/lib/useChessSounds";
-import type { ClockEventType, ReplayResponse, Side } from "@/lib/types";
+import type { ReplayResponse, Side } from "@/lib/types";
 
 function BoardLoading() {
   const t = useTranslations("replay");
@@ -64,19 +65,6 @@ const RESULT_LABEL_KEY: Record<ReplayResponse["result"], string> = {
   BlackWins: "resultBlackWins",
   Draw: "resultDraw",
   Aborted: "resultAborted",
-};
-
-const EVENT_LABEL_KEY: Record<ClockEventType, string> = {
-  CaptureGain: "eventCaptureGain",
-  CaptureLoss: "eventCaptureLoss",
-  MovementToll: "eventMovementToll",
-  CheckGain: "eventCheckGain",
-  CheckLoss: "eventCheckLoss",
-  PromotionCost: "eventPromotionCost",
-  CastleCost: "eventCastleCost",
-  Increment: "eventIncrement",
-  RepetitionNullified: "eventRepetitionNullified",
-  FlagFall: "eventFlagFall",
 };
 
 const CATEGORY_LABEL_KEY: Record<ClockCategory, string> = {
@@ -326,7 +314,6 @@ function ReplayContent({ gameId }: { gameId: string }) {
               side="Black"
               seconds={blackTime}
               active={sideToMove === "Black"}
-              popups={[]}
             />
           }
           gapMeter={
@@ -338,7 +325,6 @@ function ReplayContent({ gameId }: { gameId: string }) {
               side="White"
               seconds={whiteTime}
               active={sideToMove === "White"}
-              popups={[]}
             />
           }
           board={

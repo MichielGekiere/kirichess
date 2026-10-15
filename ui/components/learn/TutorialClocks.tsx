@@ -3,15 +3,16 @@
 import { useTranslations } from "next-intl";
 import type { Side } from "@/lib/types";
 import {
-  TimeDeltaLayer,
-  type TimeDeltaPopup,
-} from "@/components/TimeDeltaLayer";
+  ClockDeltaLine,
+  deltaTintClass,
+  type ClockDelta,
+} from "@/components/ClockDeltaLine";
 
 interface TutorialClockFaceProps {
   side: Side;
   seconds: number;
   active: boolean;
-  popups: TimeDeltaPopup[];
+  delta: ClockDelta | null;
 }
 
 function formatTime(totalSeconds: number): string {
@@ -30,7 +31,7 @@ function TutorialClockFace({
   side,
   seconds,
   active,
-  popups,
+  delta,
 }: TutorialClockFaceProps) {
   const t = useTranslations("TutorialClocks");
   const flagged = seconds <= 0;
@@ -48,7 +49,8 @@ function TutorialClockFace({
         {sideLabel}
       </div>
       <div
-        className={`mt-2 font-mono text-6xl font-black tabular-nums sm:text-7xl ${
+        key={delta?.id}
+        className={`${deltaTintClass(delta)} mt-2 font-mono text-6xl font-black tabular-nums sm:text-7xl ${
           flagged ? "text-[var(--loss)]" : active ? "text-white" : "text-muted"
         }`}
       >
@@ -59,7 +61,7 @@ function TutorialClockFace({
           {t("flagged")}
         </div>
       )}
-      <TimeDeltaLayer popups={popups} />
+      <ClockDeltaLine delta={delta} className="mt-2 justify-center" />
     </div>
   );
 }
@@ -69,8 +71,8 @@ interface TutorialClocksProps {
   blackSeconds: number;
   /** Which side is "on the move" for this step: highlighted with the active/bounty treatment. */
   activeSide: Side | null;
-  whitePopups: TimeDeltaPopup[];
-  blackPopups: TimeDeltaPopup[];
+  whiteDelta: ClockDelta | null;
+  blackDelta: ClockDelta | null;
   orientation?: "horizontal" | "vertical";
 }
 
@@ -79,8 +81,8 @@ export function TutorialClocks({
   whiteSeconds,
   blackSeconds,
   activeSide,
-  whitePopups,
-  blackPopups,
+  whiteDelta,
+  blackDelta,
   orientation = "horizontal",
 }: TutorialClocksProps) {
   return (
@@ -91,13 +93,13 @@ export function TutorialClocks({
         side="Black"
         seconds={blackSeconds}
         active={activeSide === "Black"}
-        popups={blackPopups}
+        delta={blackDelta}
       />
       <TutorialClockFace
         side="White"
         seconds={whiteSeconds}
         active={activeSide === "White"}
-        popups={whitePopups}
+        delta={whiteDelta}
       />
     </div>
   );

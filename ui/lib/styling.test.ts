@@ -411,14 +411,14 @@ describe("styling.md is still true of ui/", () => {
     ).toBe(true);
   });
 
-  it("does not dim TimeDeltaLayer labels with opacity-70", () => {
+  it("does not dim ClockDeltaLine labels with opacity-70", () => {
     const source = readFileSync(
-      join(UI_ROOT, "components", "TimeDeltaLayer.tsx"),
+      join(UI_ROOT, "components", "ClockDeltaLine.tsx"),
       "utf8",
     );
     expect(
       source.includes("opacity-70"),
-      "P-10-4: readable popup labels take full-strength colour, not an opacity wash.",
+      "P-10-4: readable clock-delta labels take full-strength colour, not an opacity wash.",
     ).toBe(false);
   });
 });

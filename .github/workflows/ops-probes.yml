@@ -12,8 +12,9 @@ name: Ops probes (10c.5)
 on:
   schedule:
     # Every 15 minutes, 3 minutes past the quarter-hour. Off the hour on purpose: scheduled runs at
-    # :00 queue behind everyone else's cron on GitHub's shared runners. Matches the 900s heartbeat
-    # period in infra/betterstack/main.tf; grace of another 900s is the slip.
+    # :00 queue behind everyone else's cron on GitHub's shared runners. Heartbeats in
+    # infra/betterstack/main.tf use period/grace 21600s each (page after 12h of silence) because
+    # this schedule routinely slips by several hours on a quiet personal repo.
     - cron: "3,18,33,48 * * * *"
   workflow_dispatch:
 

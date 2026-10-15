@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
     <!-- Direct override: ensure a patched Microsoft.OpenApi version is used
          (GHSA-v5pm-xwqc-g5wc is fixed in 2.7.5+). Pinned to the latest 2.x (2.12.0), not 3.x:
          Microsoft.AspNetCore.OpenApi 10.0.11's own source generator and MultiShapeResponseTransformer
@@ -21,7 +21,7 @@
          resolves - confirmed empirically 2026-08-19, not assumed. Re-check this pin whenever
          Microsoft.AspNetCore.OpenApi bumps to a version built against Microsoft.OpenApi 3.x. -->
     <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -37,8 +37,8 @@
        lazy. A deploy that never sets it pays one package restore and nothing else. -->
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="3.3.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.13" />
   </ItemGroup>
 
   <!-- Observability (Phase 6d). The Prometheus exporter has no stable release, beta is the only

@@ -32,7 +32,7 @@ import {
 import { AccessibleBoard } from "@/components/AccessibleBoard";
 import { useAnnouncer } from "@/components/LiveAnnouncer";
 import type { ClockHistoryPoint } from "@/components/ClockGraph";
-import type { TimeDeltaPopup } from "@/components/TimeDeltaLayer";
+import type { ClockDelta } from "@/components/ClockDeltaLine";
 import { createGameConnection, stopWhenSettled } from "@/lib/realtime";
 import { wakeDisconnectedHub } from "@/lib/hubWake";
 import { retryJoin } from "@/lib/retryJoin";
@@ -152,8 +152,12 @@ function GameContent({ gameId }: { gameId: string }) {
   const [legalUci, setLegalUci] = useState<string[]>([]);
   const [moves, setMoves] = useState<MoveListEntry[]>([]);
   const [clockHistory, setClockHistory] = useState<ClockHistoryPoint[]>([]);
-  const [whitePopups, setWhitePopups] = useState<TimeDeltaPopup[]>([]);
-  const [blackPopups, setBlackPopups] = useState<TimeDeltaPopup[]>([]);
+  const [whiteClockDelta, setWhiteClockDelta] = useState<ClockDelta | null>(
+    null,
+  );
+  const [blackClockDelta, setBlackClockDelta] = useState<ClockDelta | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(0);
@@ -175,7 +179,7 @@ function GameContent({ gameId }: { gameId: string }) {
   const connRef = useRef<signalR.HubConnection | null>(null);
   const stateRef = useRef<GameStateResponse | null>(null);
   const syncRef = useRef<ClockSync | null>(null);
-  const popupCounter = useRef(0);
+  const clockDeltaCounter = useRef(0);
   /** First JoinGame on this mount resets move/capture lists; reconnects keep them. */
   const hasJoinedRef = useRef(false);
   /**
@@ -202,17 +206,15 @@ function GameContent({ gameId }: { gameId: string }) {
     [resetTicker],
   );
 
-  function spawnPopups(events: ClockEventDto[]) {
-    for (const ev of events) {
-      if (ev.amount === 0) continue;
-      const id = `p${popupCounter.current++}`;
-      const popup: TimeDeltaPopup = { id, amount: ev.amount, label: ev.type };
-      const setter = ev.side === "White" ? setWhitePopups : setBlackPopups;
-      setter((prev) => [...prev, popup]);
-      setTimeout(() => {
-        setter((prev) => prev.filter((p) => p.id !== id));
-      }, 1300);
-    }
+  /** Both clocks show the latest move's effect, so a clock that move left alone clears too. */
+  function showClockDeltas(events: ClockEventDto[]) {
+    const id = clockDeltaCounter.current++;
+    const itemsFor = (side: Side) =>
+      events
+        .filter((ev) => ev.side === side)
+        .map((ev) => ({ amount: ev.amount, type: ev.type }));
+    setWhiteClockDelta({ id, items: itemsFor("White") });
+    setBlackClockDelta({ id, items: itemsFor("Black") });
   }
 
   // Connect, join, and subscribe. One connection for the life of the page.
@@ -265,7 +267,7 @@ function GameContent({ gameId }: { gameId: string }) {
           blackTime: p.state.blackTime,
         },
       ]);
-      spawnPopups(p.events);
+      showClockDeltas(p.events);
       setLegalUci(p.legalMoves);
       setDrawOfferFrom(null);
       // Only ever set on the move that actually ends the game (e.g. checkmate): every other move's
@@ -839,8 +841,8 @@ function GameContent({ gameId }: { gameId: string }) {
     !gameOver && drawOfferFrom !== null && drawOfferFrom !== mySide;
   const myTime = mySide === "White" ? white : black;
   const oppTime = mySide === "White" ? black : white;
-  const myPopups = mySide === "White" ? whitePopups : blackPopups;
-  const oppPopups = mySide === "White" ? blackPopups : whitePopups;
+  const myClockDelta = mySide === "White" ? whiteClockDelta : blackClockDelta;
+  const oppClockDelta = mySide === "White" ? blackClockDelta : whiteClockDelta;
   const myCaptures = mySide === "White" ? capturedByWhite : capturedByBlack;
   const oppCaptures = mySide === "White" ? capturedByBlack : capturedByWhite;
   const mySecondsWon =
@@ -906,7 +908,7 @@ function GameContent({ gameId }: { gameId: string }) {
                 seconds={oppTime}
                 active={state.sideToMove === oppSide && !gameOver && connected}
                 frozen={!connected}
-                popups={oppPopups}
+                delta={oppClockDelta}
               />
             </div>
           }
@@ -918,7 +920,7 @@ function GameContent({ gameId }: { gameId: string }) {
               seconds={myTime}
               active={state.sideToMove === mySide && !gameOver && connected}
               frozen={!connected}
-              popups={myPopups}
+              delta={myClockDelta}
             />
           }
           board={

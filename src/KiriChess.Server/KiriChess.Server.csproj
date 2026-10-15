@@ -20,7 +20,7 @@
          3.x made them read-only (init-only), which fails the build with CS0200 the moment 3.x actually
          resolves - confirmed empirically 2026-08-19, not assumed. Re-check this pin whenever
          Microsoft.AspNetCore.OpenApi bumps to a version built against Microsoft.OpenApi 3.x. -->
-    <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
+    <PackageReference Include="Microsoft.OpenApi" Version="3.10.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

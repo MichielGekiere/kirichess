@@ -19,7 +19,8 @@ and [§ 11](../../docs/ops/DEPLOYMENT.md#11-log-retention--aggregation-9c6) for 
   hide a redirect loop or accidental Access re-enable).
 - `betteruptime_heartbeat.synthetic_play` / `neon_storage` (10c.5) - pinged by
   [scripts/synthetic-play.sh](../../scripts/synthetic-play.sh) and
-  [scripts/neon-watch.sh](../../scripts/neon-watch.sh) on a 15-minute GitHub Actions schedule.
+  [scripts/neon-watch.sh](../../scripts/neon-watch.sh) from `ops-probes.yml` (cron every 15
+  minutes; GitHub schedule on this repo slips by hours, so period/grace are 21600s each).
   Playwright monitors would do the synthetic in-process at Better Stack and are a paid add-on;
   heartbeats stay inside the free-tier 10-monitor allowance.
 - `logtail_source.metrics` (platform `prometheus_scrape`) - scrapes `/metrics` every 30s,
@@ -145,10 +146,10 @@ terraform output -raw synthetic_play_heartbeat_url | gh secret set SYNTHETIC_HEA
 terraform output -raw neon_watch_heartbeat_url     | gh secret set NEON_WATCH_HEARTBEAT_URL
 ```
 
-**Owner step (not launch-gated):** the 15-minute cron is in `ops-probes.yml`, and GitHub has the
-workflow **disabled_manually**, so it is not spending minutes. Re-enable it and dispatch **Ops
-probes (10c.5)** once from the Actions tab (see ROADMAP.md). The heartbeats go green; until that
-first ping they will open an incident after `period + grace` (30 minutes).
+The 15-minute cron is in `ops-probes.yml` and is enabled. GitHub schedule on this repo routinely
+slips by several hours, so the heartbeats use `period` 21600 + `grace` 21600 (page after about
+12 hours of silence). Dispatch **Ops probes (10c.5)** once from the Actions tab after any apply
+that recreates the heartbeat URLs; until that first ping they stay Down.
 
 `BetterStackAlertingDriftTests` fails the build if those four resource blocks, or the two scripts,
 disappear.

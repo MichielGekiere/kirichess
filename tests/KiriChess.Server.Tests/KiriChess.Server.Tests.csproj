@@ -16,10 +16,10 @@
          a patched path-traversal CVE (GHSA-q939-rpr3-3284) in ScpClient.Download(), a code path this repo
          never calls. Pinned directly because Testcontainers (already latest) hasn't bumped it yet. -->
     <PackageReference Include="SSH.NET" Version="2026.0.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.Redis" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.Redis" Version="4.16.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageReference Include="Xunit.SkippableFact" Version="1.5.85" />
   </ItemGroup>
 

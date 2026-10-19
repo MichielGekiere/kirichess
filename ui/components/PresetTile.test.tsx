@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -26,48 +26,22 @@ vi.mock("@/i18n/navigation", () => ({
   ),
 }));
 
-function renderTile(offerBot: boolean, onPlayBot?: () => void) {
-  return render(
-    <NextIntlClientProvider locale="en" messages={en}>
-      <PresetTile
-        presetKey="bounty1"
-        rating={1500}
-        searching
-        offerBot={offerBot}
-        onToggle={() => undefined}
-        onPlayBot={onPlayBot}
-      />
-    </NextIntlClientProvider>,
-  );
-}
-
 describe("PresetTile", () => {
-  it("hides the bot fallback until the grid says the queue has stalled", () => {
-    renderTile(false, () => undefined);
-    expect(
-      screen.queryByRole("button", { name: `Play the bot in ${POOL}` }),
-    ).toBeNull();
-  });
-
-  it("opens the bot path from the stalled-queue affordance without queuing again", () => {
-    const onPlayBot = vi.fn();
-    const onToggle = vi.fn();
+  it("shows only the searching state while queued, with no bot offer", () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <PresetTile
           presetKey="bounty1"
           rating={1500}
           searching
-          offerBot
-          onToggle={onToggle}
-          onPlayBot={onPlayBot}
+          onToggle={() => undefined}
         />
       </NextIntlClientProvider>,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: `Play the bot in ${POOL}` }),
-    );
-    expect(onPlayBot).toHaveBeenCalledTimes(1);
-    expect(onToggle).not.toHaveBeenCalled();
+    expect(screen.getByText("Searching…")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /bot/i })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: `Searching ${POOL}… (cancel)` }),
+    ).toBeInTheDocument();
   });
 });

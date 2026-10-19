@@ -266,9 +266,7 @@
     "statusLabel": "STATUT",
     "ratingLabel": "CLASSEMENT",
     "searchingText": "Recherche…",
-    "gameInfo": "Infos sur la partie",
-    "playBotMeanwhile": "Toujours personne ici, jouez contre le bot en attendant",
-    "playBotAriaLabel": "Jouer contre le bot en {name}"
+    "gameInfo": "Infos sur la partie"
   },
   "RatedPoolsGrid": {
     "bulletLabel": "BULLET",
@@ -870,7 +868,8 @@
     "intro": "Quelqu'un attend déjà. Rejoignez son groupe pour être apparié immédiatement.",
     "waitingLabel": "{label} - en attente",
     "joining": "Connexion…",
-    "join": "Rejoindre"
+    "join": "Rejoindre",
+    "loadMore": "Charger {count} de plus"
   },
   "play": {
     "alreadyInGame": "Vous êtes déjà dans une partie, <link>retournez-y</link>.",

@@ -5,16 +5,12 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import { AlreadyInGameNotice } from "@/components/AlreadyInGameNotice";
-import { BotGameDialog } from "@/components/BotGameDialog";
 import { PresetTile } from "@/components/PresetTile";
 import { loginNextHref } from "@/lib/challengeLink";
 import { markQueued } from "@/lib/emptyLobbyLeave";
 import { getMyRatings } from "@/lib/api";
 import { useGameHub } from "@/components/GameHubProvider";
 import { isPresetKey, type PresetKey } from "@/lib/presets";
-
-/** P-1-4. Long enough that a real match can still land, short enough that a dead lobby does not look broken. */
-export const QUEUE_BOT_NUDGE_MS = 25_000;
 
 const SPEED_ROWS: { id: "bullet" | "blitz" | "rapid"; keys: PresetKey[] }[] = [
   { id: "bullet", keys: ["bounty1", "burn1"] },
@@ -36,8 +32,6 @@ export function RatedPoolsGrid() {
   const { token } = useAuth();
   const { ensure } = useGameHub();
   const [searching, setSearching] = useState<PresetKey | null>(null);
-  const [offerBot, setOfferBot] = useState(false);
-  const [botDialogPool, setBotDialogPool] = useState<PresetKey | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ratings, setRatings] = useState<Partial<Record<PresetKey, number>>>(
     {},
@@ -103,28 +97,6 @@ export function RatedPoolsGrid() {
     }
   }
 
-  useEffect(() => {
-    if (!searching) {
-      setOfferBot(false);
-      return;
-    }
-    setOfferBot(false);
-    const id = window.setTimeout(() => setOfferBot(true), QUEUE_BOT_NUDGE_MS);
-    return () => window.clearTimeout(id);
-  }, [searching]);
-
-  async function openBotFallback(pool: PresetKey) {
-    setSearching(null);
-    setBotDialogPool(pool);
-    const conn = await ensure().catch(() => null);
-    if (!conn) return;
-    try {
-      await conn.invoke("LeaveQueue");
-    } catch {
-      // Best-effort: the bot dialog is the stalled-queue exit even if the hub has dropped.
-    }
-  }
-
   return (
     <div className="mb-10 flex flex-col gap-10">
       {error && (
@@ -150,20 +122,12 @@ export function RatedPoolsGrid() {
                 rating={ratings[key] ?? null}
                 ratingPending={Boolean(token) && !ratingsLoaded}
                 searching={searching === key}
-                offerBot={searching === key && offerBot}
                 onToggle={() => toggleQueue(key)}
-                onPlayBot={() => openBotFallback(key)}
               />
             ))}
           </div>
         </div>
       ))}
-      {botDialogPool && (
-        <BotGameDialog
-          presetKey={botDialogPool}
-          onClose={() => setBotDialogPool(null)}
-        />
-      )}
     </div>
   );
 }

@@ -16,6 +16,8 @@ import { isPresetKey, PRESETS } from "@/lib/presets";
 import type { OpenSeekDto } from "@/lib/types";
 
 export const SEEK_POLL_MS = 5_000;
+/** Rows shown at first, and how many each "Load more" click adds. */
+export const SEEK_PAGE_SIZE = 5;
 
 /**
  * Phase 9e.4. MatchQueue already pairs two players in the same pool instantly (RatedPoolsGrid's
@@ -37,6 +39,7 @@ export function OpenSeekList() {
   const { ensure } = useGameHub();
   const [seeks, setSeeks] = useState<OpenSeekDto[]>([]);
   const [seeksReady, setSeeksReady] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(SEEK_PAGE_SIZE);
   const [joining, setJoining] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -108,6 +111,7 @@ export function OpenSeekList() {
     }
   }
 
+  const remaining = seeks.length - visibleCount;
   const list =
     seeks.length === 0 ? null : (
       <Card className="mt-6 flex flex-col gap-3">
@@ -120,7 +124,7 @@ export function OpenSeekList() {
           <AlreadyInGameNotice message={error} className="text-sm text-loss" />
         )}
         <ul className="flex flex-col gap-2">
-          {seeks.map((seek, i) => {
+          {seeks.slice(0, visibleCount).map((seek, i) => {
             const label = isPresetKey(seek.pool)
               ? PRESETS[seek.pool].tag
               : seek.pool;
@@ -144,6 +148,17 @@ export function OpenSeekList() {
             );
           })}
         </ul>
+        {remaining > 0 && (
+          <div className="flex justify-center mt-5">
+            <button
+              type="button"
+              onClick={() => setVisibleCount((v) => v + SEEK_PAGE_SIZE)}
+              className="btn-secondary px-5 py-2 text-sm"
+            >
+              {t("loadMore", { count: Math.min(SEEK_PAGE_SIZE, remaining) })}
+            </button>
+          </div>
+        )}
       </Card>
     );
 

@@ -266,9 +266,7 @@
     "statusLabel": "STATUS",
     "ratingLabel": "WERTUNG",
     "searchingText": "Suche…",
-    "gameInfo": "Partie-Infos",
-    "playBotMeanwhile": "Immer noch niemand hier, spiel inzwischen gegen den Bot",
-    "playBotAriaLabel": "Gegen den Bot in {name} spielen"
+    "gameInfo": "Partie-Infos"
   },
   "RatedPoolsGrid": {
     "bulletLabel": "BULLET",
@@ -870,7 +868,8 @@
     "intro": "Jemand wartet bereits. Tritt seinem Pool bei, um sofort gepaart zu werden.",
     "waitingLabel": "{label} - wartet",
     "joining": "Tritt bei…",
-    "join": "Beitreten"
+    "join": "Beitreten",
+    "loadMore": "{count} weitere laden"
   },
   "play": {
     "alreadyInGame": "Du bist schon in einer Partie, <link>zurück zur Partie</link>.",

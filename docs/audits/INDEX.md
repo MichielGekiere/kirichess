@@ -228,7 +228,7 @@ being findable and citable, plus one launch thread, not a funnel team.
 | ------- | ---------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
 | **M-1** | SEO and public pages | `ui/app/sitemap.ts`, `e2e/tests/seo.spec.ts` | Titles, OG, `/rules` `/about` `/developers`. Cloudflare Access still blocks crawlers until DH.3 — say that rather than filing “not indexed” as a code bug. | ✅ |
 | **M-2** | Press kit | [press-kit/README.md](../../press-kit/README.md), AD.1 | Recapture, convert script, logo license, a clip that is actually this game. | ✅ |
-| **M-3** | Launch and communities | [POST-DRAFT.md](../plans/launch/POST-DRAFT.md), AD.3/AD.12 | Draft red-team only. Owner sends chessvariants, archive.org. Discord invite is live in the footer (`https://discord.gg/GRusewDw4`). | ✅ |
+| **M-3** | Launch and communities | [POST-DRAFT.md](../plans/launch/POST-DRAFT.md), AD.3/AD.12 | Draft red-team only. Owner sends chessvariants, archive.org. Discord invite is live in the footer (`https://discord.gg/J9rg2RMcn8`). | ✅ |
 | **M-4** | Analytics for a privacy-first site | `Analytics/`, admin tabs | Anonymous counters and `?src=`. Enough to read AD.7 targets. Do not recommend identifiable product analytics. | ✅ |
 | **M-5** | Mail and push | templates, unsubscribe, push prefs | Transactional only. Deliverability. No accidental marketing under ePrivacy. | ✅ |
 | **M-6** | Developer ecosystem | `/developers`, `docs/api/openapi-public.json` | Token UX, rate limits, example bot, breaking-change honesty. Bots are part of the OSS surface. | ✅ |

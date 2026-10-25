@@ -36,7 +36,7 @@
        the backplane and the key ring are only registered when it is, and the connection itself is
        lazy. A deploy that never sets it pays one package restore and nothing else. -->
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="3.3.1" />
+    <PackageReference Include="StackExchange.Redis" Version="3.4.5" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="10.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.13" />
   </ItemGroup>
@@ -60,8 +60,8 @@
          float would pull a different core OpenTelemetry.dll than the 1.16.0 the SAC pin above holds
          everything else at. -->
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
-    <PackageReference Include="Sentry.AspNetCore" Version="6.12.0" />
-    <PackageReference Include="Sentry.OpenTelemetry.Exporter" Version="6.12.0" />
+    <PackageReference Include="Sentry.AspNetCore" Version="6.12.1" />
+    <PackageReference Include="Sentry.OpenTelemetry.Exporter" Version="6.12.1" />
   </ItemGroup>
 
   <ItemGroup>

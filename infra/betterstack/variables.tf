@@ -35,7 +35,7 @@ variable "alert_policy_id" {
 }
 
 variable "edge_api_url" {
-  description = "Public API origin, through Cloudflare, no trailing slash. 10c.5's edge monitor hits /health/ready here. Distinct from backend_base_url, which is the Fly hostname the metrics scrape uses so a Cloudflare incident is visible as 'edge down, origin up'."
+  description = "Public API origin, through Cloudflare, no trailing slash. 10c.5's edge monitor hits /health here. Distinct from backend_base_url, which is the Fly hostname the metrics scrape uses so a Cloudflare incident is visible as 'edge down, origin up'."
   type        = string
   default     = "https://api.kirichess.com"
 }

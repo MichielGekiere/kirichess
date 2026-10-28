@@ -33,7 +33,7 @@ recorded. Grey `api` does not use that setting: the browser talks HTTPS to Fly d
 
 - **Cloudflare** is DNS for the zone, orange-cloud CDN/WAF/DDoS for the site, and R2 for off-site
   Postgres dumps after 10c.1 (§ 5.3). It is not in the path of `/hubs/game`. Better Stack's
-  `api.kirichess.com/health/ready` monitor is therefore an origin check, same class as
+  `api.kirichess.com/health` monitor is therefore an origin check, same class as
   `kirichess-api.fly.dev`, not an edge-vs-origin split.
 - **Fly terminates TLS** for both apps (`force_https = true` in `fly.backend.toml` /
   `fly.ui.toml`) and proxies WebSocket upgrades straight through to `internal_port`, there is no
@@ -1097,10 +1097,10 @@ first when something has actually paged.
 
 | Signal | How | What a page means |
 | --- | --- | --- |
-| **Edge API** | Better Stack status monitor on `https://api.kirichess.com/health/ready` | Origin not returning 2xx. `api` is DNS only (2026-09-04), so this is the Fly API, not a Cloudflare 5xx. Compare `kirichess-api.fly.dev` if you need a second origin URL. |
+| **Edge API** | Better Stack status monitor on `https://api.kirichess.com/health` every 3 minutes (no database query) | Origin not returning 2xx. `api` is DNS only (2026-09-04), so this is the Fly API, not a Cloudflare 5xx. Compare `kirichess-api.fly.dev` if you need a second origin URL. |
 | **Edge site** | Better Stack expected-status monitor on `https://kirichess.com` (200 or 302) | Same, for the apex. 302 is the Access login wall until DH.3; a Cloudflare 5xx is not. **I-5-5:** once DH.3 removes Access, drop `302` from this monitor's `expected_status_codes` in `infra/betterstack/main.tf` (see the `# DH.3: drop 302` comment there) and update `BetterStackAlertingDriftTests` to match - a 302 from the apex after Access is gone is a redirect loop or a misconfiguration, and leaving it accepted means that never pages. |
-| **Neon storage / disabled compute** | [scripts/neon-watch.sh](../../scripts/neon-watch.sh) every 15 minutes, pings a heartbeat | Synthetic storage ≥ 80% of the plan limit, or a read_write endpoint is disabled. Connection failures stay on `/health/ready`. |
-| **A game can be played** | [scripts/synthetic-play.sh](../../scripts/synthetic-play.sh) every 15 minutes, pings a heartbeat | Could not create an unrated bounty1 practice game, play e2e4, or see White's clock move. Uses a pre-created `play` API token, not a register (Turnstile). |
+| **Neon storage / disabled compute** | [scripts/neon-watch.sh](../../scripts/neon-watch.sh) hourly, pings a heartbeat | Synthetic storage ≥ 80% of the plan limit, or a read_write endpoint is disabled. Connection failures stay on `/health/ready` (the Fly-hostname monitor, every 30 minutes). |
+| **A game can be played** | [scripts/synthetic-play.sh](../../scripts/synthetic-play.sh) hourly, pings a heartbeat | Could not create an unrated bounty1 practice game, play e2e4, or see White's clock move. Uses a pre-created `play` API token, not a register (Turnstile). |
 
 Playwright monitors at Better Stack would run the synthetic in their cloud and are a paid add-on.
 Heartbeats plus GitHub Actions stay inside the free-tier 10-monitor allowance. The workflow is
@@ -1118,7 +1118,7 @@ Heartbeats plus GitHub Actions stay inside the free-tier 10-monitor allowance. T
    terraform output -raw neon_watch_heartbeat_url     | gh secret set NEON_WATCH_HEARTBEAT_URL
    ```
 
-3. `NEON_API_KEY` is already set (9c.4). The workflow is enabled and cron'd every 15 minutes;
+3. `NEON_API_KEY` is already set (9c.4). The workflow is enabled and cron'd hourly;
    GitHub schedule on this repo routinely slips by several hours, so the heartbeats use
    `period` 21600 + `grace` 21600 (page after about 12 hours of silence). Dispatch **Ops
    probes (10c.5)** once from the Actions tab after any apply that recreates the heartbeat URLs.

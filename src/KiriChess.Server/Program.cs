@@ -503,6 +503,7 @@ if (redisOptions.Enabled)
 builder.Services.AddScoped<KiriChess.Server.Ratings.RatingInactivitySweep>();
 builder.Services.AddHostedService<KiriChess.Server.Ratings.RatingInactivitySweeper>();
 builder.Services.AddScoped<KiriChess.Server.Games.RematchNotificationSweep>();
+builder.Services.AddSingleton<KiriChess.Server.Games.RematchSweepSignal>();
 builder.Services.AddHostedService<KiriChess.Server.Games.RematchNotificationSweeper>();
 builder.Services.AddSignalR(o =>
     {

@@ -31,18 +31,20 @@ public sealed class RematchNotificationService
     private readonly EmailOptions _options;
     private readonly UnsubscribeTokenService _unsubscribeTokens;
     private readonly IConfiguration _configuration;
+    private readonly RematchSweepSignal _sweepSignal;
     private readonly ILogger<RematchNotificationService> _logger;
 
     public RematchNotificationService(
         IServiceScopeFactory scopeFactory, IEmailSender email, EmailOptions options,
         UnsubscribeTokenService unsubscribeTokens, IConfiguration configuration,
-        ILogger<RematchNotificationService> logger)
+        RematchSweepSignal sweepSignal, ILogger<RematchNotificationService> logger)
     {
         _scopeFactory = scopeFactory;
         _email = email;
         _options = options;
         _unsubscribeTokens = unsubscribeTokens;
         _configuration = configuration;
+        _sweepSignal = sweepSignal;
         _logger = logger;
     }
 
@@ -130,7 +132,11 @@ public sealed class RematchNotificationService
             // Persist first so a crash during the delay still leaves an owed row for the sweep.
             // A persist fault must not skip the in-process send: that path is how the no-restart
             // case has always worked.
-            try { await PersistDueAtAsync(finishedGameId, delaySeconds); }
+            try
+            {
+                await PersistDueAtAsync(finishedGameId, delaySeconds);
+                _sweepSignal.Raise();
+            }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex,
@@ -238,13 +244,14 @@ public sealed class RematchNotificationService
     /// <summary>
     /// Sends every still-open offer whose delay has elapsed and whose mail has not gone out. Used by
     /// <see cref="RematchNotificationSweep"/> and by tests; the in-process timer does not wait for
-    /// this. No-ops when <c>Rematch:NotifyDelaySeconds</c> is 0.
+    /// this. No-ops when <c>Rematch:NotifyDelaySeconds</c> is 0. Returns whether any offer is still
+    /// owed a mail afterwards, see <see cref="RematchNotificationSweep.RunAsync"/>.
     /// </summary>
-    public async Task FlushOwedAsync(CancellationToken ct = default)
+    public async Task<bool> FlushOwedAsync(CancellationToken ct = default)
     {
         using var scope = _scopeFactory.CreateScope();
         var sweep = scope.ServiceProvider.GetRequiredService<RematchNotificationSweep>();
-        await sweep.RunAsync(ct);
+        return await sweep.RunAsync(ct);
     }
 
     /// <summary>

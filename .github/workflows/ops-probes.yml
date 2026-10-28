@@ -11,11 +11,13 @@ name: Ops probes (10c.5)
 
 on:
   schedule:
-    # Every 15 minutes, 3 minutes past the quarter-hour. Off the hour on purpose: scheduled runs at
-    # :00 queue behind everyone else's cron on GitHub's shared runners. Heartbeats in
-    # infra/betterstack/main.tf use period/grace 21600s each (page after 12h of silence) because
-    # this schedule routinely slips by several hours on a quiet personal repo.
-    - cron: "3,18,33,48 * * * *"
+    # Hourly, 3 minutes past. Off the hour on purpose: scheduled runs at :00 queue behind everyone
+    # else's cron on GitHub's shared runners. Hourly rather than every 15 minutes because
+    # synthetic-play.sh plays a real game, which wakes Neon's compute, and Neon only suspends after
+    # five idle minutes: a 15-minute probe held the database awake a third of every hour on its own.
+    # Heartbeats in infra/betterstack/main.tf use period/grace 21600s each (page after 12h of
+    # silence) because this schedule routinely slips by several hours on a quiet personal repo.
+    - cron: "3 * * * *"
   workflow_dispatch:
 
 concurrency:

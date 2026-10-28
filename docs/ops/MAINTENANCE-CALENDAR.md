@@ -22,7 +22,7 @@ run is the intended state.
 | --- | --- | --- |
 | Restore drill (`.github/workflows/restore-drill.yml`) | `17 4 1 * *` | Once, in the first two days of each month |
 | Off-site backup (`.github/workflows/offsite-backup.yml`) | none, until GitHub's DPA is accepted | Do not expect a Sunday run, and do not dispatch it. See [DPA-CHECKLIST.md](../legal/DPA-CHECKLIST.md) |
-| Ops probes 10c.5 (`.github/workflows/ops-probes.yml`) | `3,18,33,48 * * * *` | Every 15 minutes, continuously |
+| Ops probes 10c.5 (`.github/workflows/ops-probes.yml`) | `3 * * * *` | Hourly, continuously |
 | CodeQL (`.github/workflows/codeql.yml`) | `30 3 * * 1` | Once a week, on a Monday |
 | Semgrep (`.github/workflows/semgrep.yml`) | `0 6 * * 1` | Once a week, on a Monday |
 

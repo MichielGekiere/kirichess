@@ -18,15 +18,15 @@
   "dependencies": {
     "@microsoft/signalr": "^10.0.11",
     "@sentry/nextjs": "^10.77.1",
-    "@tabler/icons-react": "^3.48.0",
+    "@tabler/icons-react": "^3.49.0",
     "chess.js": "^1.4.0",
     "next": "16.4.3",
     "next-intl": "^4.14.9",
     "qrcode": "^1.5.4",
-    "react": "19.3.0",
+    "react": "19.3.1",
     "react-chessboard": "^4.7.3",
     "react-dnd-touch-backend": "^16.0.1",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -36,7 +36,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",

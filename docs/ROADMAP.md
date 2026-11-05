@@ -36,8 +36,8 @@ blockers. Do not block 8.7 on probes or the offsite backup.
 
 | # | When | Item | Action | Unblocks |
 | --- | ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| 15 | Now | **AD.3** chessvariants.com | Send [SUBMISSION-DRAFT.md](plans/chessvariants/SUBMISSION-DRAFT.md). Find submission route, pick the inventor name. **Not gated on 8.7.** Link [MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess) if a source URL helps; never `kirichess-archive`. | Earliest public dated record of the invention. |
-| 16 | Now | **8.7** launch post | [POST-DRAFT.md](plans/launch/POST-DRAFT.md) + pre-flight checklist. r/chessvariants first, no clip, no journalist pitch. The first players are people who read the rules and queued. | The launch. |
+| 15 | Now | **AD.3** chessvariants.com | Send SUBMISSION-DRAFT.md (kept outside the repo). Find submission route, pick the inventor name. **Not gated on 8.7.** Link [MichielGekiere/kirichess](https://github.com/MichielGekiere/kirichess) if a source URL helps; never `kirichess-archive`. | Earliest public dated record of the invention. |
+| 16 | Now | **8.7** launch post | POST-DRAFT.md (kept outside the repo) + pre-flight checklist. r/chessvariants first, no clip, no journalist pitch. The first players are people who read the rules and queued. | The launch. |
 | 10 | Not a launch gate | **9e.8** load test | **Ran 2026-09-26/27** on production `shared-cpu-1x` / 512 MB. Steady cap from the files is **100 games.** Fly CPU was not sampled (the harness reads local Docker and printed 0%). **Next:** read `fly_instance_cpu` on a 100-game rung. Save a result file before any higher rung changes the cap. Capacity follow-up after Redis / second machine — not a soft-launch gate. | Honest CPU reading behind the 100-game cap. |
 | 17 | After #16 | **AD.1** press kit recapture | **Not launch-gated. Do not block 8.7.** First players come from the Reddit post, not from coverage. Recapture after the thread has run so the first room is organic. Pick a clip from [press-kit/README.md](../press-kit/README.md) (clutch queen vs opening swing). Desktop `lg` recapture + `convert.mjs`. Local Playwright. Capture the post-8.8a layout (#4a closed 2026-09-24). | A stranger who wants to cover it later has footage. Not a launch asset. |
 | - | Not a launch gate | **10c.5** GitHub dispatch | **Not launch-gated. Do not block 8.7.** Terraform, `SYNTHETIC_API_TOKEN`, and both heartbeat URL secrets landed 2026-08-20. The hourly cron is in `ops-probes.yml`, and GitHub has the workflow **disabled_manually**, so it is not spending minutes. Last scheduled attempts are 2026-08-22 ([32602717028](https://github.com/MichielGekiere/kirichess/actions/runs/32602717028)): both jobs died in ~2 s with no steps. **Owner:** re-enable the workflow and dispatch once. | Synthetic + Neon heartbeats. |
@@ -217,7 +217,7 @@ paid tiers and the payout handling remain parked under FS.4. **DH.5 / #13 landed
   and 10a.3 means the deploy that fixes either of them drops the games in flight. None of the
   three is visible from a smoke test of the deployed site, which is why they are named here rather
   than left to the pre-flight checklist in
-  [POST-DRAFT.md](plans/launch/POST-DRAFT.md)._
+  POST-DRAFT.md (kept outside the repo)._
 
   _**Two of the three are done as of 2026-08-18** (10a.1 and 10a.2, both archived below). 10a.3's
   config half is in as well, so what remains of this prerequisite is one measurement riding a
@@ -1836,7 +1836,7 @@ hosting; browser WebSockets would still go **direct to the Fly backend**, not th
   private and 404s for anyone else._
 
 
-  _**Drafted 2026-08-18: [docs/plans/chessvariants/SUBMISSION-DRAFT.md](plans/chessvariants/SUBMISSION-DRAFT.md).** A
+  _**Drafted 2026-08-18: SUBMISSION-DRAFT.md (kept outside the repo since 2026-11-05).** A
   page-style entry (name, inventor, date, board/pieces, the four rules, the endgame-bill
   consequence, the six pools, the licence) plus a shorter cover-note version for a length-limited
   form, both built from RULES.md so the numbers can't drift. **What it could not do:** confirm
@@ -1867,7 +1867,7 @@ hosting; browser WebSockets would still go **direct to the Fly backend**, not th
   appointment. It is the only mechanism in this document that turns launch attention into two
   people at a board in the same minute, and it is a scheduling decision rather than a feature._
 
-  _**Hour named 2026-09-04 in [POST-DRAFT.md](plans/launch/POST-DRAFT.md):** Fridays 20:00 UTC. The
+  _**Hour named 2026-09-04 in POST-DRAFT.md (kept outside the repo):** Fridays 20:00 UTC. The
   remaining half is 11a.4's banner, and posting on a Thursday so the named Friday is tomorrow._
   ```
 

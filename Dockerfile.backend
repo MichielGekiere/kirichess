@@ -1,7 +1,7 @@
 # Phase 10c.3: pinned by digest, not just tag - the tag is a moving target (whatever it pointed to
 # on build day), so "which image is production running" had no answer that survived a rebuild.
 # Dependabot's docker ecosystem (.github/dependabot.yml) bumps the digest as the tag moves.
-FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:de4fe90a98845d75910b9769662465c84de1a934665c431279d1382b2bddc02b AS build
 WORKDIR /app
 
 # Copy solution and project files first so `restore` caches independently of source churn.
@@ -24,15 +24,18 @@ RUN dotnet publish -c Release -o /out
 
 # --- Runtime ---
 # Same pinning reason as the build stage above.
-FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac
+FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:de0ee358cdd672f7017a003bed21e9ac9ed48a27c922a59b18175b6e82fa7fee
 WORKDIR /app
 
 # curl is only here to serve the HEALTHCHECK below; the aspnet image ships without it.
 # openssl/libssl3t64 are upgraded in the same transaction: the pinned aspnet digest still
 # ships 3.0.13-0ubuntu3.12, and CVE-2026-84782 is fixed in 3.0.13-0ubuntu3.16. apt will
-# not upgrade a package it was not asked to install.
+# not upgrade a package it was not asked to install. Same reason for apt/libapt-pkg6.0t64
+# (CVE-2026-109518, fixed in 2.8.4ubuntu0.1) and libbrotli1 (CVE-2026-111497, fixed in
+# 1.1.0-2ubuntu0.1), which the v1.3.9 release scan flagged on 2026-11-05.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl openssl libssl3t64 \
+       apt libapt-pkg6.0t64 libbrotli1 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /out .

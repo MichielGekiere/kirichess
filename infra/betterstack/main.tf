@@ -118,17 +118,21 @@ resource "betteruptime_monitor" "health_ready" {
   monitor_type       = "status"
   pronounceable_name = "KiriChess backend readiness${local.name_suffix}"
 
-  # Matches the free-tier floor (Better Stack's paid plans go down to 30s); tighten once on a paid
-  # plan. HealthEndpoints.cs's /health/ready touches the database on every call, a faster external
-  # poll just adds load for no earlier signal than the 180s bucket the DO/Fly's own health check
-  # already lives on.
-  check_frequency = 180
+  # 30 minutes, one region, on purpose. /health/ready queries Postgres on every call, and Neon only
+  # suspends its compute after five minutes with no query. At the old 180s from two regions this
+  # monitor alone was enough to keep the database awake around the clock (October 2026: ~184
+  # compute-hours billed with nobody playing). Fast "is the process up" paging is edge_api's job, on /health,
+  # which touches nothing; this one only has to notice a database that stays unreachable, and half an
+  # hour is the price of letting the compute sleep. One region, because two regions on the same
+  # frequency are not phase-locked and would wake the database twice per interval. "eu" is next to
+  # the Fly machine (primary_region = "ams").
+  check_frequency = 1800
 
   # A single slow request must not open an incident; the 503 has to hold for a minute.
   confirmation_period = 60
   recovery_period     = 60
 
-  regions = ["us", "eu"]
+  regions = ["eu"]
 
   policy_id = local.policy_id
 
@@ -564,8 +568,10 @@ resource "logtail_source" "app_logs" {
 # allowance: two new status monitors + two heartbeats, five of ten with the existing /health/ready
 # check. See DEPLOYMENT.md § 10.2.
 
+# /health, not /health/ready: this is the fast liveness page (process up, edge and DNS answering)
+# and must not query Postgres every three minutes, see health_ready above for why.
 resource "betteruptime_monitor" "edge_api" {
-  url                = "${var.edge_api_url}/health/ready"
+  url                = "${var.edge_api_url}/health"
   monitor_type       = "status"
   pronounceable_name = "KiriChess API at the edge${local.name_suffix}"
 
@@ -609,7 +615,7 @@ resource "betteruptime_monitor" "edge_site" {
   critical_alert = true
 }
 
-# Period 21600 / grace 21600 (6h + 6h). ops-probes.yml still cron's every 15 minutes, but GitHub
+# Period 21600 / grace 21600 (6h + 6h). ops-probes.yml cron's hourly, but GitHub
 # Actions schedule on this repo routinely slips by several hours (observed gaps of ~3-7h, spikes
 # past 9h). The old 900/900 window (page after 30 minutes of silence) false-paged continuously even
 # while every completed run succeeded and pinged. 12 hours of silence is the page now: still catches

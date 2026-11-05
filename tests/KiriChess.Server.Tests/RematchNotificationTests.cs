@@ -270,6 +270,39 @@ public sealed class RematchNotificationTests : IAsyncLifetime
         Assert.Null(offer.NotificationSentAt);
     }
 
+    /// <summary>
+    /// The sweeper idles on this answer. An offer whose due-at has not arrived yet still counts as
+    /// owed, so the sweeper keeps ticking through the delay window instead of parking for an hour;
+    /// once the mail has gone out nothing is owed and it may stop querying Postgres.
+    /// </summary>
+    [SkippableFact]
+    public async Task FlushOwedAsync_reports_whether_any_offer_is_still_owed()
+    {
+        Skip.IfNot(DockerAvailability.IsAvailable, "Docker not available");
+
+        var notifications = _factory!.Services.GetRequiredService<RematchNotificationService>();
+        Assert.False(await notifications.FlushOwedAsync());
+
+        var (white, black, gameId) = await FinishRatedGameAsync();
+        await ConfirmEmailAsync(black.UserId);
+        await InsertOfferAsync(gameId, white.UserId, dueAt: DateTimeOffset.UtcNow.AddMinutes(5));
+
+        Assert.True(await notifications.FlushOwedAsync());
+        Assert.DoesNotContain(_email!.Sent, m => m.Subject == EmailTemplates.RematchOfferedSubject);
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<KiriChessDbContext>();
+            await db.RematchOffers.Where(r => r.GameId == gameId)
+                .ExecuteUpdateAsync(u => u.SetProperty(r => r.NotificationDueAt, DateTimeOffset.UtcNow.AddMinutes(-1)));
+        }
+
+        // The hosted sweeper may win the claim first; either way the mail goes out once and nothing
+        // is owed afterwards.
+        Assert.False(await notifications.FlushOwedAsync());
+        Assert.Single(_email.Sent, m => m.Subject == EmailTemplates.RematchOfferedSubject);
+    }
+
     private async Task InsertOfferAsync(
         Guid gameId, Guid offeredById,
         DateTimeOffset? dueAt = null,

@@ -10,17 +10,19 @@ and [§ 11](../../docs/ops/DEPLOYMENT.md#11-log-retention--aggregation-9c6) for 
 
 ## What this provisions
 
-- `betteruptime_monitor.health_ready` - polls `https://<backend>/health/ready` every 3 minutes
-  (free-tier floor) on the **Fly hostname**, opens an incident on a sustained non-2xx (i.e. the 503
+- `betteruptime_monitor.health_ready` - polls `https://<backend>/health/ready` every 30 minutes
+  from one region on the **Fly hostname**, opens an incident on a sustained non-2xx (i.e. the 503
   `HealthEndpoints.cs` returns when the database is unreachable), e-mails the escalation policy.
-- `betteruptime_monitor.edge_api` / `edge_site` (10c.5) - the same check through Cloudflare
-  (`api.kirichess.com/health/ready` and `kirichess.com`). Origin-up/edge-down is how you tell a
-  Cloudflare 5xx from a dead app. After DH.3 / I-5-5 the site monitor expects 200 only (302 would
+  Slow on purpose: `/health/ready` queries Postgres, and at the old 3-minute, two-region cadence it
+  kept Neon's compute from ever suspending (see the comment on the resource).
+- `betteruptime_monitor.edge_api` / `edge_site` (10c.5) - liveness through the public hostnames
+  every 3 minutes (`api.kirichess.com/health`, which touches no database, and `kirichess.com`).
+  Origin-up/edge-down is how you tell a Cloudflare 5xx from a dead app. After DH.3 / I-5-5 the site monitor expects 200 only (302 would
   hide a redirect loop or accidental Access re-enable).
 - `betteruptime_heartbeat.synthetic_play` / `neon_storage` (10c.5) - pinged by
   [scripts/synthetic-play.sh](../../scripts/synthetic-play.sh) and
-  [scripts/neon-watch.sh](../../scripts/neon-watch.sh) from `ops-probes.yml` (cron every 15
-  minutes; GitHub schedule on this repo slips by hours, so period/grace are 21600s each).
+  [scripts/neon-watch.sh](../../scripts/neon-watch.sh) from `ops-probes.yml` (hourly cron;
+  GitHub schedule on this repo slips by hours, so period/grace are 21600s each).
   Playwright monitors would do the synthetic in-process at Better Stack and are a paid add-on;
   heartbeats stay inside the free-tier 10-monitor allowance.
 - `logtail_source.metrics` (platform `prometheus_scrape`) - scrapes `/metrics` every 30s,
@@ -146,7 +148,7 @@ terraform output -raw synthetic_play_heartbeat_url | gh secret set SYNTHETIC_HEA
 terraform output -raw neon_watch_heartbeat_url     | gh secret set NEON_WATCH_HEARTBEAT_URL
 ```
 
-The 15-minute cron is in `ops-probes.yml` and is enabled. GitHub schedule on this repo routinely
+The hourly cron is in `ops-probes.yml` and is enabled. GitHub schedule on this repo routinely
 slips by several hours, so the heartbeats use `period` 21600 + `grace` 21600 (page after about
 12 hours of silence). Dispatch **Ops probes (10c.5)** once from the Actions tab after any apply
 that recreates the heartbeat URLs; until that first ping they stay Down.

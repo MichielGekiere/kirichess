@@ -31,11 +31,16 @@ public sealed class RematchNotificationSweep
     /// Sends every owed, still-unaccepted offer whose <c>NotificationDueAt</c> is in the past.
     /// No-ops when the notifier is disabled so a sweep tick cannot resurrect a send the operator
     /// turned off.
+    ///
+    /// Returns true while any offer is still owed a mail, due yet or not: the sweeper keeps ticking
+    /// until this reads false and then goes idle (see <see cref="RematchNotificationSweeper"/>). The
+    /// set drains on its own, since every skip clears the due-at and an offer that outlives its
+    /// window fails <c>PeekOpenOfferAsync</c> and is cleared the same way.
     /// </summary>
-    public async Task RunAsync(CancellationToken ct = default)
+    public async Task<bool> RunAsync(CancellationToken ct = default)
     {
         var delaySeconds = _configuration.GetValue("Rematch:NotifyDelaySeconds", 90);
-        if (delaySeconds <= 0) return;
+        if (delaySeconds <= 0) return false;
 
         var now = DateTimeOffset.UtcNow;
         var owed = await _db.RematchOffers.AsNoTracking()
@@ -61,5 +66,10 @@ public sealed class RematchNotificationSweep
             var opponentId = row.OfferedById == game.WhitePlayerId ? game.BlackPlayerId : game.WhitePlayerId;
             await _notifications.TrySendAsync(row.GameId, opponentId, ct);
         }
+
+        return await _db.RematchOffers.AsNoTracking()
+            .AnyAsync(r => r.NotificationDueAt != null
+                && r.NotificationSentAt == null
+                && r.AcceptedAt == null, ct);
     }
 }

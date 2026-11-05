@@ -266,9 +266,7 @@
     "statusLabel": "STATUS",
     "ratingLabel": "RATING",
     "searchingText": "Searching…",
-    "gameInfo": "Game Info",
-    "playBotMeanwhile": "Still nobody here, play the bot meanwhile",
-    "playBotAriaLabel": "Play the bot in {name}"
+    "gameInfo": "Game Info"
   },
   "RatedPoolsGrid": {
     "bulletLabel": "BULLET",
@@ -871,7 +869,8 @@
     "intro": "Somebody is already waiting. Join their pool to pair instantly.",
     "waitingLabel": "{label} - waiting",
     "joining": "Joining…",
-    "join": "Join"
+    "join": "Join",
+    "loadMore": "Load {count} more"
   },
   "play": {
     "alreadyInGame": "You're already in a game, <link>go back to it</link>.",

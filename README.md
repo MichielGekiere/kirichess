@@ -10,7 +10,7 @@ KiriChess is an original chess variant invented by Michiel Gekiere in February 2
 
 ## Looking for playtesters
 
-KiriChess is early. Try the game modes, poke at [custom games](https://kirichess.com/custom), and say what feels off - rules, clocks, UI, or the site itself. Experiments and weird configs are welcome; useful feedback is “I tried X and it felt Y.” [Discord](https://discord.gg/GRusewDw4) or [contact@kirichess.com](mailto:contact@kirichess.com). Code contributions: see [CONTRIBUTING.md](CONTRIBUTING.md).
+KiriChess is early. Try the game modes, poke at [custom games](https://kirichess.com/custom), and say what feels off - rules, clocks, UI, or the site itself. Experiments and weird configs are welcome; useful feedback is “I tried X and it felt Y.” [Discord](https://discord.gg/J9rg2RMcn8) or [contact@kirichess.com](mailto:contact@kirichess.com). Code contributions: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Stack
 

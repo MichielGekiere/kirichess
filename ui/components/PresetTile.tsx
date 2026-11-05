@@ -17,18 +17,14 @@ export function PresetTile({
   rating,
   ratingPending = false,
   searching,
-  offerBot,
   onToggle,
-  onPlayBot,
 }: {
   presetKey: PresetKey;
   rating: number | null;
   /** Signed-in rating is still in flight. Guests stay on the dash. */
   ratingPending?: boolean;
   searching: boolean;
-  offerBot?: boolean;
   onToggle: () => void;
-  onPlayBot?: () => void;
 }) {
   const t = useTranslations("PresetTile");
   const tLoading = useTranslations("loading");
@@ -106,16 +102,6 @@ export function PresetTile({
           {t("gameInfo")}
         </Link>
       </div>
-      {searching && offerBot && onPlayBot ? (
-        <button
-          type="button"
-          onClick={onPlayBot}
-          aria-label={t("playBotAriaLabel", { name: preset.label })}
-          className="btn-secondary relative z-20 mt-4 self-start px-5 py-2 text-sm"
-        >
-          {t("playBotMeanwhile")}
-        </button>
-      ) : null}
     </Card>
   );
 }

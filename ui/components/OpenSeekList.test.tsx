@@ -5,7 +5,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { resetEmptyLobbyLeave } from "@/lib/emptyLobbyLeave";
 import en from "../messages/en.json";
 import { GameHubProvider } from "./GameHubProvider";
-import { OpenSeekList, SEEK_POLL_MS } from "./OpenSeekList";
+import { OpenSeekList, SEEK_PAGE_SIZE, SEEK_POLL_MS } from "./OpenSeekList";
 
 const useAuth = vi.fn();
 const push = vi.fn();
@@ -98,6 +98,34 @@ describe("OpenSeekList", () => {
     await waitFor(() =>
       expect(hub.invoke).toHaveBeenCalledWith("JoinQueue", "bounty1"),
     );
+  });
+
+  it("shows five seeks at first and reveals the rest on Load more", async () => {
+    useAuth.mockReturnValue({ token: "session", hydrated: true });
+    const pools = [
+      "bounty1",
+      "burn1",
+      "steal1",
+      "steal2",
+      "burn2",
+      "steal3",
+      "bounty1",
+    ];
+    api.getOpenSeeks.mockResolvedValue(
+      pools.map((pool, i) => ({
+        pool,
+        waitingSinceUtc: `2026-09-07T00:0${i}:00Z`,
+      })),
+    );
+    renderList();
+    await waitFor(() =>
+      expect(screen.getAllByRole("button", { name: "Join" })).toHaveLength(
+        SEEK_PAGE_SIZE,
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Load 2 more" }));
+    expect(screen.getAllByRole("button", { name: "Join" })).toHaveLength(7);
+    expect(screen.queryByRole("button", { name: /Load .* more/ })).toBeNull();
   });
 
   it("does not poll while the document is hidden (I-1-7)", async () => {

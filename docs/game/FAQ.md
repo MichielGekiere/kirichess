@@ -28,4 +28,4 @@ If a step explains the rule but does not make the clock change understandable, f
 
 ## Where can I discuss or report one of these cases?
 
-For a concrete rules or balance example, open an issue with the position, pool, moves, and clock state when possible. For discussion, join the [KiriChess Discord](https://discord.gg/GRusewDw4). The [About page](https://kirichess.com/about) has the project background and contact details.
+For a concrete rules or balance example, open an issue with the position, pool, moves, and clock state when possible. For discussion, join the [KiriChess Discord](https://discord.gg/J9rg2RMcn8). The [About page](https://kirichess.com/about) has the project background and contact details.

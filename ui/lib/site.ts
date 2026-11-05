@@ -19,7 +19,7 @@ export const SITE_DESCRIPTION = "Chess where every move costs, or earns, time.";
  */
 export const GITHUB_URL: string | null =
   "https://github.com/MichielGekiere/kirichess";
-export const DISCORD_URL = "https://discord.gg/GRusewDw4";
+export const DISCORD_URL = "https://discord.gg/J9rg2RMcn8";
 
 /**
  * Weekly play hour (ROADMAP 11a.4 / AD.5). One slot, UTC so DST does not move it.

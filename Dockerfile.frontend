@@ -42,6 +42,12 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# The runner only ever executes `node server.js`; the base image's global npm (and npx/corepack)
+# is never used here, but its bundled dependencies are what the image scan keeps flagging
+# (.trivyignore's bundled-npm block). Removing it takes them off the image instead of waiving them.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+
 # `output: "standalone"` (ui/next.config.ts) emits a self-contained server.js plus a trimmed node_modules.
 COPY --from=builder --chown=node:node /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./

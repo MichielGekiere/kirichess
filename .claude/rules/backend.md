@@ -47,7 +47,7 @@ Redis backs the SignalR backplane, distributed live-game ownership (see [realtim
 
 - Run from repo root: `dotnet ef migrations add <Name> --project src/KiriChess.Server`
 - Migrations live in `src/KiriChess.Server/Data/Migrations/`
-- **Do not** run `dotnet ef database update` without explicit user confirmation
+- **Do not** run `dotnet ef database update` as part of adding a migration. Applying one to a database is a separate, deliberate step by whoever owns that database
 - Do not hand-edit `.Designer.cs` or `KiriChessDbContextModelSnapshot.cs`
 
 ## OpenAPI export

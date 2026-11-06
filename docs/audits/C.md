@@ -84,8 +84,8 @@ Packet-level findings only. Section-level detail, including all 40 Low findings,
   instance. The `RatingHistory` index on `(UserId, Pool, CreatedAt)` is not unique and there is no
   constraint on `(GameId, UserId)`, so a duplicate silently double-counts rather than failing. A rating
   is accumulated over months and a silent double-count is not visible afterwards.
-- Fix: a unique index on `RatingHistory(GameId, UserId)`. That is a migration: generate it, do not apply
-  it without asking.
+- Fix: a unique index on `RatingHistory(GameId, UserId)`. That is a migration: generate it, and leave applying
+  it as a separate, deliberate step.
 
 #### C-1-5 — The engine does not hold the fail-loudly guarantee engine.md states for it
 - Severity: Medium (trigger: any caller reaching `KiriChessConfig` without going through the custom-game
@@ -1897,7 +1897,7 @@ after the fact.
 
 *Fix:* a unique index on `RatingHistory(GameId, UserId)`, so a duplicate insert throws where the caller
 already logs instead of silently double-counting. That is a migration, so per `.claude/rules/backend.md`
-generate it and do not run `database update` without asking.
+generate it and leave `database update` as a separate, deliberate step.
 
 ---
 
@@ -2069,7 +2069,7 @@ Cross-reference: packet **C-10** owns the ranked missing-test list and should me
 In order: batches 1, 2, 3, 5, 6, 8, 10. Batch 4 needs a migration generated but not
 applied. Batches 7 and 11 belong to packets P-5 and C-10 respectively.
 
-Your decisions:
+Decisions for the owner:
 
 1. Whether batch 3 is done now or booked against Phase 8.4. Doing it now is cheaper than doing it while
    chasing a live multi-instance bug.

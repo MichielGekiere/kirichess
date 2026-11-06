@@ -1,6 +1,6 @@
 # Testing rules
 
-Four distinct layers exist in this repo. Know which one a change needs - adding the wrong kind (or none) is the most common miss `pr-reviewer` flags.
+Four distinct layers exist in this repo. Know which one a change needs - adding the wrong kind (or none) is the most common miss in review.
 
 ## Backend unit/integration - `tests/KiriChess.Server.Tests/`
 

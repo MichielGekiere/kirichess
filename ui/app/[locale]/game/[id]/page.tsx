@@ -36,7 +36,7 @@ import type { ClockDelta } from "@/components/ClockDeltaLine";
 import { createGameConnection, stopWhenSettled } from "@/lib/realtime";
 import { wakeDisconnectedHub } from "@/lib/hubWake";
 import { retryJoin } from "@/lib/retryJoin";
-import { localPlayerSide } from "@/lib/gameSide";
+import { isHotseatGame, localPlayerSide } from "@/lib/gameSide";
 import { historyFromSnapshot } from "@/lib/gameHistory";
 import { rematchUiState } from "@/lib/rematchUiState";
 import { computeCostPreview, economyFromPreset } from "@/lib/costPreview";
@@ -286,6 +286,11 @@ function GameContent({ gameId }: { gameId: string }) {
           isBotMode,
           playerSide,
         );
+        const hotseat = isHotseatGame(
+          isBotMode,
+          p.state.whitePlayerId,
+          p.state.blackPlayerId,
+        );
         const deliversCheck = p.events.some(
           (ev) => ev.type === "CheckGain" || ev.type === "CheckLoss",
         );
@@ -294,7 +299,7 @@ function GameContent({ gameId }: { gameId: string }) {
             priorFen,
             uci: p.uci,
             events: p.events,
-            you: mySideNow,
+            you: hotseat ? prior : mySideNow,
             mover: prior,
             check: deliversCheck,
             t: tA11y,
@@ -555,14 +560,21 @@ function GameContent({ gameId }: { gameId: string }) {
       prevRemainingRef.current = null;
       return;
     }
-    const mySideNow = localPlayerSide(
-      state.whitePlayerId,
-      userId,
+    const hotseat = isHotseatGame(
       isBotMode,
-      playerSide,
+      state.whitePlayerId,
+      state.blackPlayerId,
     );
+    const urgencySide = hotseat
+      ? state.sideToMove
+      : localPlayerSide(
+          state.whitePlayerId,
+          userId,
+          isBotMode,
+          playerSide,
+        );
     const { white, black } = displayTimes();
-    const myRemaining = mySideNow === "White" ? white : black;
+    const myRemaining = urgencySide === "White" ? white : black;
     const previous = prevRemainingRef.current;
     prevRemainingRef.current = myRemaining;
 
@@ -831,6 +843,11 @@ function GameContent({ gameId }: { gameId: string }) {
     isBotMode,
     playerSide,
   );
+  const hotseat = isHotseatGame(
+    isBotMode,
+    state.whitePlayerId,
+    state.blackPlayerId,
+  );
   const oppSide: Side = mySide === "White" ? "Black" : "White";
   const opponentIsBot =
     oppSide === "White" ? state.whiteViaApi : state.blackViaApi;
@@ -932,7 +949,7 @@ function GameContent({ gameId }: { gameId: string }) {
                 onMove={handleMove}
                 costFor={costFor}
                 lastMoveUci={moves.at(-1)?.uci}
-                mySide={mySide}
+                mySide={hotseat ? undefined : mySide}
               />
 
               {/* A second, parallel view over the same state (design decision 1): a real
@@ -943,7 +960,7 @@ function GameContent({ gameId }: { gameId: string }) {
                 fen={state.fen}
                 legalUci={playableUci}
                 sideToMove={state.sideToMove}
-                you={mySide}
+                you={hotseat ? state.sideToMove : mySide}
                 onMove={handleMove}
                 costFor={costFor}
                 onAnnounce={announcer.assertive}

@@ -116,8 +116,8 @@ interface BoardProps {
    * one of this colour's pieces so the selection is already there when the turn arrives - that
    * highlight is not a premove: nothing is sent until it is this colour's turn and a destination
    * is chosen. Omitted by spectator/replay/tutorial boards (`watch/[id]`, `replay/[id]`,
-   * `/learn`), which have no local player and keep today's White-on-bottom, side-to-move-draggable
-   * behaviour.
+   * `/learn`) and by pass-and-play (Custom → Local), which have no single local colour and keep
+   * White-on-bottom, side-to-move-draggable behaviour.
    */
   mySide?: Side;
 }

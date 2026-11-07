@@ -520,6 +520,17 @@ describe("Board preselection while the opponent thinks", () => {
     click("e2");
     expect(styles()?.e2?.boxShadow).toBeUndefined();
   });
+
+  it("lets the side to move drag either colour when there is no local player", () => {
+    const { onMove } = renderLive({ mySide: undefined });
+    expect(chessboardProps()?.isDraggablePiece?.({ piece: "bP" })).toBe(true);
+    expect(chessboardProps()?.isDraggablePiece?.({ piece: "wP" })).toBe(false);
+
+    click("e7");
+    expect(styles()?.e7?.boxShadow).toMatch(/inset/);
+    click("e5");
+    expect(onMove).toHaveBeenCalledWith("e7e5");
+  });
 });
 
 describe("Board click-path promotion picker (C-11-6)", () => {

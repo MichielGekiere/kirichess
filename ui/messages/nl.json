@@ -873,7 +873,8 @@
   },
   "play": {
     "alreadyInGame": "Je zit al in een partij, <link>ga ernaar terug</link>.",
-    "alreadyInGamePlain": "Je zit al in een partij."
+    "alreadyInGamePlain": "Je zit al in een partij.",
+    "resumeGameCta": "Terug naar de partij"
   },
   "BotGameDialog": {
     "createGameFailed": "Partij aanmaken is mislukt.",

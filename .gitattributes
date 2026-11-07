@@ -7,3 +7,8 @@
 
 # Belt-and-suspenders with .gitignore: never include a local identity map in git archive.
 .mailmap export-ignore
+
+# Vendored Stockfish build: byte-for-byte the upstream release, pinned by size and sha256 in
+# ui/lib/stockfishLicense.test.ts. With core.autocrlf=true a Windows checkout rewrote its LF line
+# endings to CRLF, adding 10 bytes and failing that test locally while CI stayed green.
+ui/public/stockfish-*.js -text

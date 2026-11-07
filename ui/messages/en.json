@@ -874,7 +874,8 @@
   },
   "play": {
     "alreadyInGame": "You're already in a game, <link>go back to it</link>.",
-    "alreadyInGamePlain": "You're already in a game."
+    "alreadyInGamePlain": "You're already in a game.",
+    "resumeGameCta": "Return to game"
   },
   "BotGameDialog": {
     "createGameFailed": "Failed to create game.",

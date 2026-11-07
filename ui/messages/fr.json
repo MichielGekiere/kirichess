@@ -873,7 +873,8 @@
   },
   "play": {
     "alreadyInGame": "Vous êtes déjà dans une partie, <link>retournez-y</link>.",
-    "alreadyInGamePlain": "Vous êtes déjà dans une partie."
+    "alreadyInGamePlain": "Vous êtes déjà dans une partie.",
+    "resumeGameCta": "Retourner à la partie"
   },
   "BotGameDialog": {
     "createGameFailed": "Impossible de créer la partie.",

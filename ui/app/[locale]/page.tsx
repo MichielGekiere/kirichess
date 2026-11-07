@@ -9,6 +9,7 @@ import { BotPlayPanel } from "@/components/BotPlayPanel";
 import { ChallengeFriendPanel } from "@/components/ChallengeFriendPanel";
 import { CustomGameCta } from "@/components/CustomGameCta";
 import { SanctionBanner } from "@/components/SanctionBanner";
+import { ResumeGameBanner } from "@/components/ResumeGameBanner";
 import { EmailConfirmationBanner } from "@/components/EmailConfirmationBanner";
 import { GameHubProvider } from "@/components/GameHubProvider";
 
@@ -39,6 +40,9 @@ export default async function Home() {
             visitor (gated on useAuth()'s token).
           */}
           <SanctionBanner />
+
+          {/* A game left by accident: the way back belongs above everything that starts a new one. */}
+          <ResumeGameBanner />
 
           {/*
             Above the pools on purpose: this is the page whose every control the gate refuses, so the

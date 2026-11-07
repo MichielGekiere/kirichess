@@ -165,6 +165,11 @@ function NumberField({
   suffix?: string;
   disabled?: boolean;
 }) {
+  // While the field has focus it holds the raw text, so clearing it to type
+  // "60" does not snap to the minimum and leave "160". In-range values commit
+  // as you type; anything else is clamped when the field loses focus.
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown = draft ?? String(Number.isFinite(value) ? value : min);
   return (
     <label className={`flex flex-col gap-1.5 ${disabled ? "opacity-40" : ""}`}>
       <span className="text-sm font-medium text-[var(--foreground)] inline-flex items-center gap-1.5">
@@ -178,11 +183,24 @@ function NumberField({
       <div className="flex items-center gap-2">
         <input
           type="number"
-          value={Number.isFinite(value) ? value : min}
+          value={shown}
           min={min}
           max={max}
           disabled={disabled}
-          onChange={(e) => onChange(clampInt(e.target.value, min, max, min))}
+          onChange={(e) => {
+            const raw = e.target.value;
+            setDraft(raw);
+            const n = parseInt(raw, 10);
+            if (!Number.isNaN(n) && n >= min && n <= max) onChange(n);
+          }}
+          onBlur={() => {
+            if (draft !== null) {
+              onChange(
+                clampInt(draft, min, max, Number.isFinite(value) ? value : min),
+              );
+              setDraft(null);
+            }
+          }}
           className="w-full border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-white focus:border-[var(--bounty)] focus:outline-none disabled:cursor-not-allowed"
         />
         {suffix && (

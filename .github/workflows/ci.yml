@@ -178,9 +178,16 @@ jobs:
       # detail), scanned before migrations run so a vulnerable image fails fast.
       - name: Resolve built image ids
         id: images
+        # Resolved to a repo:tag, not the bare id: since 2026-11-18 the runner's Docker refuses to
+        # export an image named by a 64-hex id ("invalid repository name ... cannot specify 64-byte
+        # hexadecimal strings"), which is how Trivy pulls the image out of the daemon.
         run: |
-          echo "backend=$(docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml images -q backend)" >> "$GITHUB_OUTPUT"
-          echo "frontend=$(docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml images -q frontend)" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          for svc in backend frontend; do
+            id=$(docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml images -q "$svc")
+            ref=$(docker image inspect --format '{{index .RepoTags 0}}' "$id")
+            echo "$svc=$ref" >> "$GITHUB_OUTPUT"
+          done
 
       # Same waiver-with-an-expiry shape npm-audit-gate.mjs established (Phase 9a.1): a gate with no
       # waiver path gets deleted the first week it is inconvenient (10c.2). Trivy's own .trivyignore

@@ -1,0 +1,61 @@
+name: Play hour reminder
+
+# ROADMAP AD.5 / 11a.4: "post the day before a session" turns a read into an appointment.
+# Every Thursday this posts the next Friday 20:00 UTC play hour (WEEKLY_MEETUP in ui/lib/site.ts)
+# into the KiriChess Discord through a channel webhook. Discord renders <t:...> timestamps in
+# each reader's own timezone, so the post says one UTC hour without anyone doing the maths.
+#
+# Needs one repository secret: DISCORD_WEBHOOK_URL (Discord: Server settings > Integrations >
+# Webhooks > Copy Webhook URL). Without it the job skips with a notice instead of failing.
+
+on:
+  schedule:
+    # Thursdays 17:07 UTC, about a day before the hour. Off the hour on purpose: :00 cron runs queue
+    # behind everyone else's on GitHub's shared runners, and this schedule can slip by hours.
+    - cron: "7 17 * * 4"
+  workflow_dispatch:
+
+concurrency:
+  group: play-hour-reminder
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  discord:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Post the reminder to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "::notice::DISCORD_WEBHOOK_URL is not set; nothing posted."
+            exit 0
+          fi
+
+          # The coming Friday 20:00 UTC, or next week's if this one has already started.
+          ts=$(date -u -d "friday 20:00" +%s)
+          if [ "$ts" -le "$(date -u +%s)" ]; then
+            ts=$((ts + 7 * 24 * 3600))
+          fi
+
+          content=$(printf '%s\n%s\n%s' \
+            "♟️ **KiriChess play hour: Friday 20:00 UTC** (<t:${ts}:F> your time, <t:${ts}:R>)" \
+            "Real opponents instead of bots, one hour, every week. Bring a friend." \
+            "https://kirichess.com/?src=discord")
+
+          # allowed_mentions.parse = [] so nothing in the text can ever ping @everyone.
+          payload=$(jq -n --arg content "$content" \
+            '{content: $content, allowed_mentions: {parse: []}}')
+
+          curl --fail-with-body --silent --show-error \
+            -H "Content-Type: application/json" \
+            -d "$payload" \
+            "$DISCORD_WEBHOOK_URL"
+
+          echo "Posted reminder for $(date -u -d "@$ts" '+%Y-%m-%d %H:%M UTC')."

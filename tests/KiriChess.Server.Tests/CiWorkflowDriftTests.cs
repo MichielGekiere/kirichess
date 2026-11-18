@@ -172,6 +172,9 @@ public sealed class CiWorkflowDriftTests
         var files = WorkflowFiles().ToList();
         Assert.True(files.Count > 0, ".github/workflows/ contained no .yml/.yaml files; the layout changed.");
 
+        // A workflow made only of `run:` steps (play-hour-reminder.yml) has nothing to pin, so the
+        // shape guard is over the whole directory rather than per file.
+        var matched = 0;
         foreach (var fileName in files)
         {
             var lines = Read(fileName)
@@ -183,9 +186,11 @@ public sealed class CiWorkflowDriftTests
                 })
                 .ToList();
 
-            Assert.True(lines.Count > 0, $"{fileName}: no `uses:` steps matched; the workflow's shape changed.");
+            matched += lines.Count;
             Assert.All(lines, line => Assert.Matches(ShaPinnedAction, line));
         }
+
+        Assert.True(matched > 0, "No `uses:` steps matched in any workflow; the workflow shape changed.");
     }
 
     /// <summary>

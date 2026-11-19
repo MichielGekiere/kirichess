@@ -5,7 +5,8 @@ import { usePresence } from "@/components/PresenceProvider";
 
 /**
  * Live "players online / in game" readout for the home screen, plus the weekly play hour.
- * Presence is pushed over the hub (no polling). The hour always renders: it answers "when
+ * Presence is pushed over the hub (no polling), and only to signed-in players: a visitor sees the
+ * play hour alone. The hour always renders: it answers "when
  * next?" even before the first presence push, which is the question Presence alone cannot.
  */
 export function PresenceIndicator() {

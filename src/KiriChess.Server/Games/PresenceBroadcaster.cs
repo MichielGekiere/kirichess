@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.SignalR;
 namespace KiriChess.Server.Games;
 
 /// <summary>
-/// Pushes the presence counts to every <see cref="PresenceHub"/> client whenever they change.
+/// Pushes the presence counts to every signed-in <see cref="PresenceHub"/> client
+/// (<see cref="PresenceHub.MembersGroup"/>) whenever they change. Anonymous connections get nothing.
 /// Polls on a coarse timer rather than hooking each event source, because "in game" moves for reasons
 /// the presence hub never sees (flag-fall, abandon, a game created over REST), one cheap tick covers
 /// all of them, and nothing is sent while the numbers sit still.
@@ -84,7 +85,7 @@ public sealed class PresenceBroadcaster : BackgroundService
             // Sent before _last moves, so a failed send is re-attempted on the next tick rather than
             // suppressed for as long as the numbers happen to sit still. Re-sending identical counts
             // is already documented above as harmless.
-            await _hub.Clients.All.SendAsync("PresenceChanged", current, ct);
+            await _hub.Clients.Group(PresenceHub.MembersGroup).SendAsync("PresenceChanged", current, ct);
             _last = current;
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)

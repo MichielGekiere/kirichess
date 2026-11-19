@@ -342,7 +342,7 @@ machine are refused.
 ### Who gets the budget (10a.2)
 
 `hard_limit` counts the right unit and says nothing about **who** spends it. `JoinAsSpectator` is
-anonymous on purpose (8.1) and a lobby visitor holds a presence socket, so on the day 8.7 sends a
+anonymous on purpose (8.1) (anonymous visitors no longer open a presence socket: the lobby counts are signed-in only), so on the day 8.7 sends a
 wave of people to watch one game, the failure mode is not a server falling over: it is **players
 being refused while onlookers hold the capacity**. The app therefore keeps its own connection budget
 beside Fly's, in `HubConnectionBudget`, applied on hub connect and probed at negotiate.

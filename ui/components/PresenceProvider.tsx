@@ -18,6 +18,9 @@ const PresenceContext = createContext<PresencePayload | null>(null);
  * next to the readout because being connected is what makes the visitor *count* as online: a player
  * sitting on the game page has to stay connected here too, or they'd show up in "in game" while
  * missing from "online". Reconnects when the token changes, since the token carries the identity.
+ *
+ * Signed-in only: the server sends the counts to authenticated connections alone, so a visitor
+ * without a token does not open the socket at all (it would carry nothing) and sees no counts.
  */
 export function PresenceProvider({ children }: { children: ReactNode }) {
   const { token, hydrated } = useAuth();
@@ -26,6 +29,10 @@ export function PresenceProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Wait for the stored token, otherwise a signed-in visitor connects anonymously and is uncounted.
     if (!hydrated) return;
+    if (!token) {
+      setPresence(null);
+      return;
+    }
 
     const conn = createPresenceConnection();
     conn.on("PresenceChanged", (payload: PresencePayload) =>

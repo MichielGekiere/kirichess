@@ -72,8 +72,8 @@ export function createGameConnection(): signalR.HubConnection {
 
 /**
  * Creates (but does not start) a connection to the presence hub, which pushes the live lobby counts.
- * Anonymous-friendly: with no token the visitor still receives the counts, they just aren't in them
- * (SignalR omits the credential entirely when the factory returns an empty string).
+ * The counts are only sent to signed-in connections, so `PresenceProvider` opens this only when a
+ * token is present (an anonymous connection is accepted by the server but receives nothing).
  */
 export function createPresenceConnection(): signalR.HubConnection {
   return new signalR.HubConnectionBuilder()
